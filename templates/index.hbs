@@ -1,0 +1,23 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+</head>
+
+<body>
+
+<h1>Posts</h1>
+<ul>
+
+    {{#each c}}
+
+        <li>
+            <strong>Title:</strong> {{this.title}}<br>
+            <strong>Description:</strong> <a href="{{this.url}}">{{this.description}}</a><br>
+            <strong>Category:</strong> {{this.name}}<br/><br/><br/>
+        </li>
+    {{/each}}
+</ul>
+</body>
+</html>
