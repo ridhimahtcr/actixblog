@@ -1,11 +1,6 @@
-use std::collections::HashMap;
-use std::error::Error;
-use std::fmt::Display;
 use std::fs;
-use std::future::Future;
-use warp::body::json;
 use serde_json::json;
-use actix_web::{HttpResponse, web};
+use actix_web::{HttpResponse};
 use crate::model::database::{get_all_categories, Posts, select_all_from_table, select_posts};
 
 pub async fn get_all_posts()-> HttpResponse
@@ -23,8 +18,6 @@ pub async fn get_all_posts()-> HttpResponse
     let all_posts_to_front_end= get_all_categories().await.expect("posts");
 
     let all_posts_in_struct:Vec<Posts>=select_posts().await.expect("message");
-
-    println!("{:?}",&all_posts_in_struct);
 
     let html = handlebars.render("index", &json!({"a":&all_posts_to_front_end,"b":&homepage,"c":&all_posts_in_struct})).unwrap() ;
 

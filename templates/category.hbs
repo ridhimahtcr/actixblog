@@ -1,0 +1,20 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+</head>
+<body>
+<p>
+
+    {{#each p}}
+    <a href="/posts/{{this.name}}">
+        {{#each this}}
+            {{ this }}
+        {{/each}}<br><br><br>
+    {{/each}}</a>
+</p>
+
+</p>
+</body>
+</html>

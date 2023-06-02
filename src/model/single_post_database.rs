@@ -1,8 +1,11 @@
+
 use sqlx::{Error, FromRow, Row};
 use sqlx::postgres::{PgPoolOptions, PgRow};
 use crate::model::database::Posts;
 
-pub async fn single_post_query(titles: String) ->Result<Vec<String>,Error>
+
+
+pub async fn query_single_post(data: i32) ->Result<Vec<Posts>,Error>
 {
 
     dotenv::dotenv().expect("Unable to load environment variables from .env file");
@@ -14,22 +17,16 @@ pub async fn single_post_query(titles: String) ->Result<Vec<String>,Error>
         .connect(&db_url)
         .await.expect("Unable to connect to Postgres");
 
-    let mut single_post=Vec::new();
 
-    let  rows = sqlx::query("SELECT name,title,description FROM posts WHERE title =$1")
-        .bind(titles)
+    let mut posts = sqlx::query_as::<_, Posts>("select name, title, description from posts where post_id = ($1)")
+        .bind(data)
         .fetch_all(&pool)
-        .await.expect("Unable to");
+        .await
+        .unwrap();
 
+        println!("🍓{:?}\t", posts);
 
-    for row in rows {
+    println!("🍓{:?}\t", posts[0].title);
 
-        let  title:String= row.get("title");
-        let description: String = row.get("description");
-        let name: String = row.get("name");
-        let single_post_string=title+" "+ &*description +" "+ &*name;
-        single_post.push(single_post_string);
-    }
-    println!("{:?}",single_post);
-    Ok(single_post)
+    Ok(posts)
 }

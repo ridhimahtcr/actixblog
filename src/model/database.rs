@@ -1,6 +1,6 @@
-use sqlx::{Error, Pool, Postgres, Row};
+use sqlx::{Error, Row};
 use serde::Serialize;
-use sqlx::postgres::{PgPoolOptions, PgRow};
+use sqlx::postgres::{PgPoolOptions};
 use serde::Deserialize;
 use sqlx::FromRow;
 
