@@ -3,7 +3,7 @@ use actix_web::{HttpResponse, web};
 use serde_json::json;
 use crate::model::single_post_database::query_single_post;
 
-pub async fn  get_single_post(path: web::Path<String>) -> HttpResponse
+pub async fn   get_single_post(path: web::Path<String>) -> HttpResponse
 {
     let mut data=path.into_inner().parse().unwrap();
 
