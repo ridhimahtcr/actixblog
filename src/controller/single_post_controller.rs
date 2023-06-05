@@ -10,7 +10,7 @@ pub async fn   get_single_post(path: web::Path<String>) -> HttpResponse
 
     let mut handlebars= handlebars::Handlebars::new();
 
-    let index_template = fs::read_to_string("templates/index.hbs").unwrap();
+    let index_template = fs::read_to_string("templates/single.hbs").unwrap();
     handlebars
         .register_template_string("single", &index_template).expect("TODO: panic message");
 

@@ -5,9 +5,23 @@
     <title>Blog</title>
 </head>
 <body>
-<ul>
-{{q}}
-</ul>
-
+<table>
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Category</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each q}}
+        <tr>
+            <td>{{this.title}}</td>
+            <td><a href="/posts/{{this.title}}">{{this.description}}</a></td>
+            <td>{{this.name}}</td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
 </body>
 </html>

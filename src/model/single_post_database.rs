@@ -18,6 +18,8 @@ pub async fn query_single_post(data: i32) ->Result<Vec<Posts>,Error>
         .await.expect("Unable to connect to Postgres");
 
 
+
+
     let mut posts = sqlx::query_as::<_, Posts>("select name, title, description from posts where post_id = ($1)")
         .bind(data)
         .fetch_all(&pool)
