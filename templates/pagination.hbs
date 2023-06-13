@@ -1,19 +1,14 @@
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
-<div class="content">
-
-    <div class="pagination_post">
-        {{#each pages_count }}
-            <a href="?page={{this}}">{{this}}</a>
+    <div class="pagination">
+        {{#each page_count }}
+            <a href="?page={{this}}" >{{this}}</a>
         {{/each}}
     </div>
-
-</div>
-
 </body>
 </html>
+
+
