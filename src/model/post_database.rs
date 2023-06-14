@@ -1,4 +1,3 @@
-use crate::model::database::Posts;
 use sqlx::postgres::PgPoolOptions;
 use std::fmt::Error;
 
@@ -11,7 +10,7 @@ pub async fn create_new_post_database(
 
     let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
-    let mut pool = PgPoolOptions::new()
+    let pool = PgPoolOptions::new()
         .max_connections(100)
         .connect(&db_url)
         .await
@@ -32,7 +31,7 @@ pub async fn delete_post_database(delete_string: String) -> Result<(), Error> {
 
     let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
-    let mut pool = PgPoolOptions::new()
+    let pool = PgPoolOptions::new()
         .max_connections(100)
         .connect(&db_url)
         .await

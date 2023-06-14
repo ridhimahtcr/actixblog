@@ -7,7 +7,7 @@ pub async fn get_single_post(path: web::Path<i32>) -> HttpResponse {
     // "Post 10"
     //let mut data=path.into_inner().parse().unwrap();
 
-    let mut post_id = path.into_inner();
+    let post_id = path.into_inner();
 
     let mut handlebars = handlebars::Handlebars::new();
 

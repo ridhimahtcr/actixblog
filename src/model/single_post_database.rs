@@ -7,13 +7,13 @@ pub async fn query_single_post(data: i32) -> Result<Vec<Posts>, Error> {
 
     let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
-    let mut pool = PgPoolOptions::new()
+    let pool = PgPoolOptions::new()
         .max_connections(100)
         .connect(&db_url)
         .await
         .expect("Unable to connect to Postgres");
 
-    let mut posts = sqlx::query_as::<_, Posts>(
+    let posts = sqlx::query_as::<_, Posts>(
         "select post_id, name, title, description from posts where post_id = ($1)",
     )
     .bind(data)

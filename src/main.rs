@@ -1,13 +1,17 @@
 use crate::controller::homepage::get_all_posts;
 
+mod authentication;
 mod controller;
+mod login;
 mod model;
 
 use crate::controller::category_controller::category_controller;
+use crate::controller::login::login_form;
 use crate::controller::pagination_controller::pagination_show;
 use crate::controller::post_controller::get_new_post;
 use crate::controller::single_post_controller::get_single_post;
-use actix_web::{web, App, HttpResponse, HttpServer, Result};
+use actix_web::{web, App, HttpServer, Result};
+use crate::login::post::login;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -19,6 +23,9 @@ async fn main() -> Result<()> {
             .service(web::resource("/posts").to(pagination_show))
             .service(web::resource("/posts/new").to(get_new_post))
             .service(web::resource("/admin").to(pagination_show))
+            .service(web::resource("/login").to(login_form))
+            .route("/login", web::get().to(login_form))
+            .route("/login", web::post().to(login))
     })
     .bind("127.0.0.1:8080")?
     .run()

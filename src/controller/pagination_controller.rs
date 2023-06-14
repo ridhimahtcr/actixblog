@@ -17,7 +17,7 @@ pub async fn get_count_posts() -> HttpResponse {
         .await
         .expect("Unable to connect to Postgres");
 
-    let mut all_posts: Vec<i32> = Vec::new();
+    let all_posts: Vec<i32> = Vec::new();
 
     let rows = sqlx::query("SELECT title,description,name FROM posts")
         .fetch_all(&pool)
@@ -25,9 +25,9 @@ pub async fn get_count_posts() -> HttpResponse {
         .unwrap();
 
     for row in rows {
-        let title: String = row.get("title");
-        let description: String = row.get("description");
-        let name: String = row.get("name");
+        let _title: String = row.get("title");
+        let _description: String = row.get("description");
+        let _name: String = row.get("name");
     }
 
     let total_count_posts: i32 = all_posts.len() as i32;
@@ -59,7 +59,7 @@ pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse
     let mut pages_count = Vec::new();
 
     for i in 0..posts_per_page {
-        pages_count.push(i + 1 as i64);
+        pages_count.push(i + 1_i64);
     }
 
     println!("{:?}", pages_count);
@@ -70,9 +70,9 @@ pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse
         .register_template_string("pagination", &index_template)
         .expect("TODO: panic message");
 
-    let current_page = &params.page;
+    let _current_page = &params.page;
 
-    let all_category = get_all_categories().await.expect("categories");
+    let _all_category = get_all_categories().await.expect("categories");
 
     let html = handlebars
         .render(
@@ -106,7 +106,7 @@ pub async fn pagination_query() -> i64 {
 
     for row in rows {
         let title: i64 = row.get("count");
-        count = count + title;
+        count += title;
         println!("{:?}", title);
     }
 

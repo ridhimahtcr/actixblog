@@ -2,15 +2,13 @@ use crate::model::database::Categories;
 use crate::model::database::Posts;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::Error;
-use sqlx::Row;
-use std::arch::asm;
 
 pub async fn get_all_categories_database() -> Result<Vec<Categories>, Error> {
     dotenv::dotenv().expect("Unable to load environment variables from .env file");
 
     let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
-    let mut pool = PgPoolOptions::new()
+    let pool = PgPoolOptions::new()
         .max_connections(100)
         .connect(&db_url)
         .await

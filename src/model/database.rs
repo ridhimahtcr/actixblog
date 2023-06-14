@@ -52,7 +52,7 @@ pub async fn select_posts() -> Result<Vec<Posts>, Error> {
         .await
         .expect("Unable to connect to Postgres");
 
-    let mut allposts =
+    let allposts =
         sqlx::query_as::<_, Posts>("select post_id, title, description, name from posts")
             .fetch_all(&pool)
             .await

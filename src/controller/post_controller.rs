@@ -1,5 +1,5 @@
 use crate::model::category_database::get_all_categories_database;
-use crate::model::post_database::{ delete_post_database};
+use crate::model::post_database::delete_post_database;
 use actix_web::{web, HttpResponse};
 use serde_json::json;
 use std::fs;
