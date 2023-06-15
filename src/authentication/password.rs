@@ -22,27 +22,27 @@ pub struct Credentials {
 async fn get_stored_credentials(
     username: &str,
     pool: &PgPool,
-) -> Result<Option<(uuid::Uuid, Secret<String>)>, anyhow::Error> {
-    /*  let row = sqlx::query!(
+) -> Result<Option<(i32, Secret<String>)>, anyhow::Error> {
+    let row = sqlx::query!(
         r#"
-        SELECT user_id, password_hash
+        SELECT user_id, password
         FROM users
         WHERE username = $1
         "#,
         username,
     )
-        .fetch_optional(pool)
-        .await
-        .context("Failed to performed a query to retrieve stored credentials.")?
-        .map(|row| (row.user_id, Secret::new(row.password_hash)));
-    Ok(row)*/
+    .fetch_optional(pool)
+    .await
+    .context("Failed to performed a query to retrieve stored credentials.")?
+    .map(|row| (row.user_id, Secret::new(row.password)));
+    Ok(row)
 }
 
 #[tracing::instrument(name = "Validate credentials", skip(credentials, pool))]
 pub async fn validate_credentials(
     credentials: Credentials,
     pool: &PgPool,
-) -> Result<uuid::Uuid, AuthError> {
+) -> Result<i32, AuthError> {
     let mut user_id = None;
     let mut expected_password_hash = Secret::new(
         "$argon2id$v=19$m=15000,t=2,p=1$\
@@ -57,11 +57,6 @@ pub async fn validate_credentials(
         user_id = Some(stored_user_id);
         expected_password_hash = stored_password_hash;
     }
-    /*spawn_blocking_with_tracing(move || {
-        verify_password_hash(expected_password_hash, credentials.password)
-    })*/
-    .await
-    .context("Failed to spawn blocking task.")??;
 
     user_id
         .ok_or_else(|| anyhow::anyhow!("Unknown username."))
@@ -112,10 +107,3 @@ pub async fn change_password(
     Ok(())
 }
 */
-fn compute_password_hash(password: Secret<String>) -> Result<Secret<String>, anyhow::Error> {
-    let salt = SaltString::generate(&mut rand::thread_rng());
-    let password_hash = Argon2::new(Algorithm::Argon2id, Params::new(15000, 2, 1, None).unwrap())
-        .hash_password(password.expose_secret().as_bytes(), &salt)?
-        .to_string();
-    Ok(Secret::new(password_hash))
-}

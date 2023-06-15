@@ -1,0 +1,61 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog</title>
+</head>
+<body>
+
+<div class="sidebar">
+    <a class="active" href="#home">Home</a>
+    <a href="#">Posts only</a>
+    <a href="/category">Categories Only</a>
+</div>
+
+<div class="content">
+<p class="listing category">
+    {{#each o}}
+        <a href="/categories/{{this}}">{{this}}</a>
+    {{/each}}
+    </p>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Title</th>
+                    <th scope="col" >Description</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Option</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {{#each  tiger}}
+
+                    <td> <a href="/posts/{{this.title}}"> {{this.title}}</td>
+
+                    <td> <a href="/posts/{{this.title}}"> {{this.description}}</td>
+                    <td><a href="/posts/{{this.title}}"> {{this.name}}</td>
+                    </tr>
+                {{/each}}
+
+                </tbody>
+            </table>
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {{#each pages_count }}
+                        <li class="page-item"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+
+
+    <button type="button"> <a href="/logout">Logout</a></button>
+
+</div>
+</body>
+</html>

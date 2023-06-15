@@ -1,4 +1,4 @@
-use crate::authentication::password::{Credentials, validate_credentials};
+use crate::authentication::password::{validate_credentials, Credentials};
 use actix_web::http::header::LOCATION;
 use actix_web::web;
 use actix_web::HttpResponse;
@@ -17,12 +17,15 @@ skip(form, pool),
 fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
 )]
 
-pub async fn login(form: web::Form<FormData>, pool: web::Data<PgPool>) -> Result<HttpResponse, Err> {
-    /*let credentials = Credentials {
+pub async fn login(
+    form: web::Form<FormData>,
+    pool: web::Data<PgPool>,
+) -> Result<HttpResponse, actix_web::Error> {
+    let credentials = Credentials {
         username: form.0.username,
         password: form.0.password,
-    };*/
-    tracing::Span::current().record("username", &tracing::field::display(&Credentials.username));
+    };
+    tracing::Span::current().record("username", &tracing::field::display(&credentials.username));
     match validate_credentials(credentials, &pool).await {
         Ok(user_id) => {
             tracing::Span::current().record("user_id", &tracing::field::display(&user_id));
@@ -33,9 +36,11 @@ pub async fn login(form: web::Form<FormData>, pool: web::Data<PgPool>) -> Result
                 .insert_header((LOCATION, "/admin/dashboard"))
                 .finish())
         }
+        Err(inner) => {
+            todo!()
+        }
     }
 }
-
 
 /*fn login_redirect(e: LoginError) -> InternalError<LoginError> {
     FlashMessage::error(e.to_string()).send();
@@ -53,4 +58,3 @@ pub enum LoginError {
     #[error("Something went wrong")]
     UnexpectedError(#[from] anyhow::Error),
 }*/
-

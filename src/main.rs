@@ -6,12 +6,13 @@ mod login;
 mod model;
 
 use crate::controller::category_controller::category_controller;
-use crate::controller::login::login_form;
+
 use crate::controller::pagination_controller::pagination_show;
 use crate::controller::post_controller::get_new_post;
 use crate::controller::single_post_controller::get_single_post;
-use actix_web::{web, App, HttpServer, Result};
+use crate::login::get::login_form;
 use crate::login::post::login;
+use actix_web::{web, App, HttpServer, Result};
 
 #[tokio::main]
 async fn main() -> Result<()> {

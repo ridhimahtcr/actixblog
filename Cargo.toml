@@ -38,4 +38,4 @@ validator = "0.16"
 tracing-actix-web = "0.7"
 secrecy = { version = "0.8", features = ["serde"] }
 actix-web-lab = "0.18"
-uuid = "0.8.2"
+uuid = { version = "1", features = ["v4", "serde"] }
