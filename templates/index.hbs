@@ -28,6 +28,7 @@
         <th>Title</th>
         <th>Description</th>
         <th>Category</th>
+        <th>Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -36,11 +37,31 @@
             <td>{{this.title}}</td>
             <td><a href="/posts/{{this.post_id}}">{{this.description}}</a></td>
             <td>{{this.name}}</td>
+            <td>
+                <button onclick="editPost('{{this.post_id}}')">Edit</button>
+                <button onclick="deletePost('{{this.post_id}}')">Delete</button>
+            </td>
         </tr>
     {{/each}}
     </tbody>
 
 </table>
+
+<div class="pagination">
+    {{#each page_count }}
+        <a href="?page={{this}}" >{{this}}</a>
+    {{/each}}
+</div>
+
+<script>
+    function editPost(postId) {
+        console.log("Edit post with ID:", postId);
+    }
+
+    function deletePost(postId) {
+        console.log("Delete post with ID:", postId);
+    }
+</script>
 
 
 </body>

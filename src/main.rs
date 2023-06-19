@@ -16,6 +16,10 @@ use actix_web::{web, App, HttpServer, Result};
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    tracing_subscriber::fmt()
+        // Configure formatting settings.
+        // Set the subscriber as the default.
+        .init();
     HttpServer::new(|| {
         App::new()
             .service(web::resource("/").to(get_all_posts))

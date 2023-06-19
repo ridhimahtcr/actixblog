@@ -12,15 +12,15 @@ pub struct FormData {
     password: Secret<String>,
 }
 
-#[tracing::instrument(
-skip(form, pool),
-fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
-)]
-
+//#[tracing::instrument(
+//skip(form, pool),
+//fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
+//)]
 pub async fn login(
     form: web::Form<FormData>,
     pool: web::Data<PgPool>,
 ) -> Result<HttpResponse, actix_web::Error> {
+    tracing::info!("abc");
     let credentials = Credentials {
         username: form.0.username,
         password: form.0.password,
@@ -33,7 +33,7 @@ pub async fn login(
             .insert_user_id(user_id)
             .map_err(|e| login_redirect(LoginError::UnexpectedError(e.into())))?;*/
             Ok(HttpResponse::SeeOther()
-                .insert_header((LOCATION, "/admin/dashboard"))
+                .insert_header((LOCATION, "/admin"))
                 .finish())
         }
         Err(inner) => {
