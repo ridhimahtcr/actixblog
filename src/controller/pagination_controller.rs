@@ -53,7 +53,7 @@ pub async fn get_count_posts() -> HttpResponse {
 pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse {
     let total_posts_length: u32 = pagination_query().await as u32;
 
-    let posts_per_page = total_posts_length / 2;
+    let posts_per_page = total_posts_length / 3;
     let posts_per_page = posts_per_page as i64;
 
     let mut pages_count = Vec::new();

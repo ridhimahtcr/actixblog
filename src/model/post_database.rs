@@ -47,3 +47,29 @@ pub async fn delete_post_database(delete_string: String) -> Result<(), Error> {
     println!("Successfully deleted");
     Ok(())
 }
+
+pub async fn update_post_database(
+    title: &String,
+    description: &String,
+    id: &String,
+    category_id: &i32,
+) -> Result<(), Error> {
+    dotenv::dotenv().expect("Unable to load environment variables from .env file");
+    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
+
+    let pool = PgPoolOptions::new()
+        .max_connections(100)
+        .connect(&db_url)
+        .await
+        .expect("Unable to connect to Postgres");
+
+    sqlx::query("update posts set title=$1 ,description=$2, category_id=$3 where id=$4")
+        .bind(title)
+        .bind(description)
+        .bind(category_id)
+        .bind(id)
+        .execute(&pool)
+        .await
+        .expect("Unable to add");
+    Ok(())
+}

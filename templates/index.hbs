@@ -22,7 +22,7 @@
 
 <body>
 <h1>Posts</h1>
-<table>
+<table action="https://www.w3docs.com/" method="get" target="_blank" >
     <thead>
     <tr>
         <th>Title</th>
@@ -33,13 +33,14 @@
     </thead>
     <tbody>
     {{#each c}}
+
         <tr>
             <td>{{this.title}}</td>
-            <td><a href="/posts/{{this.post_id}}">{{this.description}}</a></td>
+            <td ><a href="/posts/{{this.post_id}}">{{this.description}}</a></td>
             <td>{{this.name}}</td>
             <td>
-                <button onclick="editPost('{{this.post_id}}')">Edit</button>
-                <button onclick="deletePost('{{this.post_id}}')">Delete</button>
+                <button onclick="to_update_post('{{this.post_id}}')">Update</button>
+                <button onclick="delete_post('{{this.post_id}}')">Delete</button>
             </td>
         </tr>
     {{/each}}
@@ -47,21 +48,15 @@
 
 </table>
 
+
+
 <div class="pagination">
     {{#each page_count }}
         <a href="?page={{this}}" >{{this}}</a>
     {{/each}}
 </div>
 
-<script>
-    function editPost(postId) {
-        console.log("Edit post with ID:", postId);
-    }
 
-    function deletePost(postId) {
-        console.log("Delete post with ID:", postId);
-    }
-</script>
 
 
 </body>

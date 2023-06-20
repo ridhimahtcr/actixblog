@@ -1,7 +1,8 @@
 use crate::authentication::password::{validate_credentials, Credentials};
+use actix_identity::{Identity, IdentityMiddleware};
 use actix_web::http::header::LOCATION;
-use actix_web::web;
 use actix_web::HttpResponse;
+use actix_web::{web, Responder};
 use secrecy::Secret;
 use sqlx::PgPool;
 use std::error::Error;
@@ -12,16 +13,19 @@ pub struct FormData {
     password: Secret<String>,
 }
 
+#[derive(serde::Deserialize)]
+pub struct user {
+    pub(crate) username: String,
+    pub(crate) password: String,
+}
+
 //#[tracing::instrument(
 //skip(form, pool),
 //fields(username=tracing::field::Empty, user_id=tracing::field::Empty)
 //)]
-pub async fn login(
-    form: web::Form<FormData>,
-    pool: web::Data<PgPool>,
-) -> Result<HttpResponse, actix_web::Error> {
+pub async fn login(form: web::Form<FormData>) -> Result<HttpResponse, actix_web::Error> {
     tracing::info!("abc");
-    let credentials = Credentials {
+    /* let credentials = Credentials {
         username: form.0.username,
         password: form.0.password,
     };
@@ -39,6 +43,25 @@ pub async fn login(
         Err(inner) => {
             todo!()
         }
+    }*/
+
+    Ok(HttpResponse::SeeOther()
+        .insert_header((LOCATION, "/"))
+        .finish())
+}
+
+pub async fn logout(id: Identity) -> impl Responder {
+    id.logout();
+
+    //web::Redirect::to("/").using_status_code(StatusCode::FOUND)
+    web::Redirect::to("/")
+}
+
+pub async fn check_user(user: Option<Identity>) -> impl Responder {
+    if let Some(user) = user {
+        web::Redirect::to("/admin?page=1&limit=2")
+    } else {
+        web::Redirect::to("/")
     }
 }
 
