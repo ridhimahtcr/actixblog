@@ -5,16 +5,29 @@
     <title>Blog</title>
 </head>
 <body>
-<p>
-
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Category</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
     {{#each p}}
-    <a href="/posts/{{this.name}}">
-        {{#each this}}
-            {{ this }}
-        {{/each}}<br><br><br>
-    {{/each}}</a>
-</p>
+        <tr>
+            <td>{{this.category_id}}</td>
+            <td ><a href="/categories/{{this.category_id}}">{{this.name}}</a></td>
+            <td>{{this.name}}</td>
+            <td>
+                <button onclick="to_update_post('{{this.post_id}}')">Update</button>
+                <button onclick="delete_post('{{this.post_id}}')">Delete</button>
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
 
-</p>
+</table>
+
 </body>
 </html>

@@ -1,0 +1,91 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog</title>
+<style>
+        <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+        .sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+}
+
+/* Sidebar links */
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+}
+
+/* Active/current link */
+.sidebar a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+/* Links on mouse-over */
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+    </style>
+</head>
+<body>
+<h1><center>Categories</center></h1>
+<div class="sidebar">
+    <a href="/">Posts</a>
+    <a class="active" href="/category">Categories</a>
+    <a href="/login">Logout</a>
+
+</div>
+<div class="content">
+<table>
+    <thead>
+    <tr>
+        <th>Category</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {{#each z}}
+        <tr data-category="{{this.category}}">
+            <td>   {{this.name}}
+            <td>
+                <button onclick="confirmDelete('{{this.post_id}}')">Delete</button>
+            </td>
+        </tr>
+    {{/each}}
+    </tbody>
+</table>
+</div>
+</body>
+</html>
+
+

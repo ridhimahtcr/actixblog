@@ -1,24 +1,31 @@
 use crate::model::category_database::get_all_categories_database;
 use crate::model::database::Posts;
-use crate::model::post_database::{delete_post_database, update_post_database};
+use crate::model::post_database::{
+    create_new_post_database, delete_post_database, update_post_database,
+};
 use actix_web::{web, HttpResponse};
 use serde_json::json;
 use std::fs;
 
-pub async fn get_new_post() -> HttpResponse {
+pub async fn get_new_post(new_post: web::Path<String>) -> HttpResponse {
     let mut handlebars = handlebars::Handlebars::new();
     let index_template = fs::read_to_string("templates/new_post.hbs").unwrap();
     handlebars
         .register_template_string("new_post", &index_template)
         .expect("TODO: panic message");
 
-    let all_categories = get_all_categories_database()
-        .await
-        .expect("TODO: panic message");
+    let new_post = create_new_post_database(
+        &"title".to_string(),
+        &"description".to_string(),
+        &"name".to_string(),
+    )
+    .await
+    .expect("TODO: panic message");
 
     let html = handlebars
-        .render("new_post", &json!({ "all_categories": all_categories }))
+        .render("new_post", &json!({ "new_post": new_post }))
         .unwrap();
+
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(html)

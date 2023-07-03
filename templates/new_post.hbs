@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>New Post Form</title>
+    <title>New Post</title>
 </head>
 <body>
-<form action="/new_post" method="post">
+{{#each all_categories}}
+    {{this.name}}
+{{/each}}
+<form action="http://localhost:8080/new_post" method="post">
     <input type="text" name="title" placeholder="title"><br>
     <input type="text" name="description" placeholder="description"><br>
     <select name="text" id="name" name="name">
+
         {{#each all_categories}}
             <option value="{{this.name}}"  placeholder="name" name="name">{{this.name}}</option>
+
         {{/each}}
     </select>
     <input type="submit" value="Submit">
