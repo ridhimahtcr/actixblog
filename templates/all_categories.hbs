@@ -92,10 +92,10 @@ div.content {
 </body>
 
 <script>
-function confirmDelete(postId) {
+function confirmDelete(category_id) {
   if (confirm("Are you sure you want to delete this category?")) {
     // Redirect to the delete URL
-    location.href = '/delete_category' + postId;
+    location.href = '/delete_category/' + category_id;
   }
 }
 </script>

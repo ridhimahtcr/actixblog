@@ -37,6 +37,8 @@ pub async fn get_all_categories_controller() -> HttpResponse {
         .await
         .expect("TODO: panic message");
 
+    println!("{:?}",all_categories);
+
     let html = handlebars
         .render("all_categories", &json!({ "z": &all_categories }))
         .unwrap();
@@ -127,3 +129,4 @@ pub async fn delete_category(to_delete: web::Path<String>) -> HttpResponse {
         .content_type("text/html; charset=utf-8")
         .body(html)
 }
+

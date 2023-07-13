@@ -50,13 +50,18 @@ pub async fn get_count_posts() -> HttpResponse {
         .body(html)
 }
 
-pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse {
+pub async fn pagination_show(path: web::Path<i32>) -> HttpResponse {
+    println!("{:?}",path);
     let total_posts_length: u32 = pagination_query().await as u32;
 
     let posts_per_page = total_posts_length / 3;
     let posts_per_page = posts_per_page as i64;
 
     let mut page_count = Vec::new();
+    let page = path.into_inner();
+    let params = PaginateParams{page:Some(page), per_page:Some(3)};
+
+
 
     for i in 0..posts_per_page {
         page_count.push(i + 1_i64);
@@ -65,13 +70,14 @@ pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse
     println!("{:?}", page_count);
 
 
+
     let mut handlebars = handlebars::Handlebars::new();
     let index_template = fs::read_to_string("templates/pagination.hbs").unwrap();
     handlebars
         .register_template_string("pagination", &index_template)
         .expect("TODO: panic message");
 
-    let paginator = pagination_logic(params.clone()).await.expect("Aasd");
+    let paginator = pagination_logic(params.into()).await.expect("message");
 
     let _current_page = &params.page;
     let exact_posts_only = select_specific_pages_post(_current_page)
@@ -80,7 +86,15 @@ pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse
 
     let all_category = get_all_categories().await.expect("categories");
 
-    let html = handlebars.render("admin_page", &json!({"a":&paginator,"tt":&total_posts_length,"pages_count":page_count,"page":exact_posts_only,"o":all_category}))
+    let mut pages_count = Vec::new();
+
+    for i in 0..posts_per_page {
+        pages_count.push(i + 1_i64);
+    }
+
+    println!("{:?}", pages_count);
+
+    let html = handlebars.render("pagination", &json!({"a":&paginator,"tt":&total_posts_length,"page_count":pages_count,"page":exact_posts_only,"o":all_category}))
         .unwrap() ;
 
     HttpResponse::Ok()
@@ -99,7 +113,7 @@ pub async fn pagination_query() -> i64 {
         .await
         .expect("Unable to connect to Postgres");
 
-    let rows = sqlx::query("SELECT COUNT(*) FROM posts")
+    let rows = sqlx::query("SELECT COUNT(*) FROM posts ")
         .fetch_all(&pool)
         .await
         .unwrap();
@@ -135,7 +149,7 @@ pub async fn select_specific_pages_post(
         .await
         .expect("Unable to connect to Postgres");
 
-    let selected_posts = sqlx::query_as::<_, Posts>("select * from posts limit  $1 offset $2")
+    let selected_posts = sqlx::query_as::<_, Posts>("select * from posts limit  3 offset $2")
         .bind(new_start_page + 3)
         .bind(new_start_page)
         .fetch_all(&pool)

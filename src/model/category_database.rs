@@ -14,7 +14,7 @@ pub async fn get_all_categories_database() -> Result<Vec<Categories>, Error> {
         .await
         .expect("Unable to connect to Postgres");
 
-    let all_categories = sqlx::query_as::<_, Categories>("select name from categories")
+    let all_categories = sqlx::query_as::<_, Categories>("select name, category_id from categories")
         .fetch_all(&pool)
         .await
         .expect("Unable to");
@@ -106,10 +106,10 @@ pub async fn delete_category_database(delete_string: String) -> Result<(), Error
         .await
         .expect("Unable to connect to Postgres");
 
-    let delete_string = delete_string;
+    //let delete_string = delete_string;
 
-    sqlx::query("delete from categories where title =$1")
-        .bind(delete_string)
+    sqlx::query("delete from categories where category_id =$1")
+        .bind(delete_string.parse::<i32>().unwrap())
         .execute(&pool)
         .await
         .expect("Unable to delete");

@@ -5,6 +5,7 @@ use sqlx::{Error, Row};
 
 #[derive(Deserialize, Debug, Clone, PartialEq, Serialize, sqlx::FromRow)]
 pub struct Categories {
+    pub category_id: i32,
     pub name: String,
 }
 
@@ -53,7 +54,7 @@ pub async fn select_posts() -> Result<Vec<Posts>, Error> {
         .expect("Unable to connect to Postgres");
 
     let allposts =
-        sqlx::query_as::<_, Posts>("select post_id, title, description, name from posts")
+        sqlx::query_as::<_, Posts>("select post_id, title, description, name from posts limit 3")
             .fetch_all(&pool)
             .await
             .unwrap();
@@ -74,14 +75,16 @@ pub async fn select_all_from_table() -> Result<Vec<String>, Error> {
 
     let mut all_posts = Vec::new();
 
-    let rows = sqlx::query("SELECT title,description,name FROM posts")
+    let rows = sqlx::query("SELECT title,description,name FROM posts LIMIT 3")
         .fetch_all(&pool)
         .await?;
+
     for row in rows {
         let title: String = row.get("title");
         let description: String = row.get("description");
         let name: String = row.get("name");
         let all_posts_string = title + " " + &*description + " " + &*name;
+        println!("---->{:?}",all_posts_string);
         all_posts.push(all_posts_string);
     }
 

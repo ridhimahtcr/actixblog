@@ -97,7 +97,7 @@ div.content {
 
 <!-- Page content -->
 <div class="content">
-    <a href="/posts/new">
+    <a href="/admin/posts/new_form">
         <button class="success-button">Create New Post</button>
     </a>
     <select id="categoryFilter" onchange="filterPosts()">
@@ -124,7 +124,7 @@ div.content {
                 <td><a href="/posts/{{this.post_id}}">{{this.description}}</a></td>
                 <td>{{this.name}}</td>
                 <td>
-                    <button onclick="location.href='to_update_post/{{this.post_id}}'">Update</button>
+                    <button onclick="location.href='/admin/edit_form/{{this.post_id}}'">Update</button>
                     <button onclick="confirmDelete('{{this.post_id}}')">Delete</button>
 
                 </td>
@@ -140,7 +140,7 @@ div.content {
 
 <div class="pagination">
     {{#each page_count }}
-        <a href="?page={{this}}" >{{this}}</a>
+        <a href="/page/{{this}}" >{{this}}</a>
     {{/each}}
 </div>
 
@@ -150,7 +150,7 @@ div.content {
 
 
 </div>
-</body>
+
 <script>
     function redirectToPage() {
   window.location.href = "new_post.hbs";
@@ -207,4 +207,5 @@ fetchCategories();
 
 
 </script>
+</body>
 </html>

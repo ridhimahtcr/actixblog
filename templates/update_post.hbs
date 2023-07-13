@@ -22,9 +22,18 @@
 
 <h1 style="font-size: 50px;
       margin: 15vh 0 2rem;    margin-left: 780px;"> UPDATE POST</h1>
-<form action="/edit" method="post" style="align-self: center;">
+<form action="/admin/edit/{{post_id}}" method="post" style="align-self: center;">
 
 
+    <input type="text" name="post_id" placeholder="post_id"  value="{{post_id}}" class="form-control" style="width: clamp(120px, 50vw, 420px);
+      height: 2.5rem;
+      padding: 0 1.25rem;
+      border: 1px solid $black;
+      border-radius: 2px;
+      margin: 0.625rem auto;
+      transition: all 250ms;
+      @media (min-width: 768px) {
+        width: clamp(120px, 35vw, 420px);"><br>
     <input type="text" name="title" placeholder="title"  class="form-control" style="width: clamp(120px, 50vw, 420px);
       height: 2.5rem;
       padding: 0 1.25rem;
@@ -43,7 +52,7 @@
       transition: all 250ms;
       @media (min-width: 768px) {
         width: clamp(120px, 35vw, 420px);"><br>
-    <input type="text" name="category_id" placeholder="category_id"  class="form-control" style="width: clamp(120px, 50vw, 420px);
+    <input type="text" name="name" placeholder="name"  class="form-control" style="width: clamp(120px, 50vw, 420px);
       height: 2.5rem;
       padding: 0 1.25rem;
       border: 1px solid $black;
