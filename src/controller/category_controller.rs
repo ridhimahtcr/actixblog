@@ -1,7 +1,4 @@
-use crate::model::category_database::{
-    category_controller_database_function, category_database, create_new_category_database,
-    get_all_categories_database,
-};
+use crate::model::category_database::{category_controller_database_function, category_database, create_new_category_database, delete_category_database, get_all_categories_database};
 use actix_web::{web, HttpResponse};
 use serde_json::json;
 use std::fs;
@@ -107,3 +104,26 @@ pub async fn get_new_category() -> HttpResponse {
         .body(html)
 }
 
+pub async fn delete_category(to_delete: web::Path<String>) -> HttpResponse {
+    println!("{:?}", to_delete);
+    let to_delete = to_delete.into_inner();
+
+    delete_category_database(to_delete)
+        .await
+        .expect(" panic message");
+
+    let mut handlebars = handlebars::Handlebars::new();
+    let index_template = fs::read_to_string("templates/message.hbs").unwrap();
+    handlebars
+        .register_template_string("message", &index_template)
+        .expect("TODO: panic message");
+
+    let success_message = "the category deleted successfully";
+    let html = handlebars
+        .render("message", &json!({ "message": success_message }))
+        .unwrap();
+
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html)
+}

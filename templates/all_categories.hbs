@@ -60,7 +60,7 @@ div.content {
 <body>
 <h1><center>Categories</center></h1>
 <div class="sidebar">
-    <a href="/">Posts</a>
+    <a href="/homepage">Posts</a>
     <a class="active" href="/category">Categories</a>
     <a href="/login">Logout</a>
 
@@ -93,9 +93,9 @@ div.content {
 
 <script>
 function confirmDelete(postId) {
-  if (confirm("Are you sure you want to delete this post?")) {
+  if (confirm("Are you sure you want to delete this category?")) {
     // Redirect to the delete URL
-    location.href = 'delete_post/' + postId;
+    location.href = '/delete_category' + postId;
   }
 }
 </script>

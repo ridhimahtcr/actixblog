@@ -64,6 +64,7 @@ pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse
 
     println!("{:?}", page_count);
 
+
     let mut handlebars = handlebars::Handlebars::new();
     let index_template = fs::read_to_string("templates/pagination.hbs").unwrap();
     handlebars

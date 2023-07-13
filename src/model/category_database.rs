@@ -93,3 +93,26 @@ pub async fn create_new_category_database(name: &String) -> Result<(), Error> {
 
     Ok(())
 }
+
+
+pub async fn delete_category_database(delete_string: String) -> Result<(), Error> {
+    dotenv::dotenv().expect("Unable to load environment variables from .env file");
+
+    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
+
+    let pool = PgPoolOptions::new()
+        .max_connections(100)
+        .connect(&db_url)
+        .await
+        .expect("Unable to connect to Postgres");
+
+    let delete_string = delete_string;
+
+    sqlx::query("delete from categories where title =$1")
+        .bind(delete_string)
+        .execute(&pool)
+        .await
+        .expect("Unable to delete");
+    println!("Successfully deleted");
+    Ok(())
+}

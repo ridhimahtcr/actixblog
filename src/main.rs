@@ -5,7 +5,7 @@ mod controller;
 mod login;
 mod model;
 
-use crate::controller::category_controller::{get_all_categories_controller, get_all_categories_controller_public, get_new_category};
+use crate::controller::category_controller::{delete_category, get_all_categories_controller, get_all_categories_controller_public, get_new_category};
 
 use crate::controller::pagination_controller::pagination_show;
 use crate::controller::post_controller::{delete_post, get_new_post, to_update_post};
@@ -38,6 +38,7 @@ async fn main() -> Result<()> {
             .service(web::resource("/posts/new").to(get_new_post))
             .service(web::resource("/categories/new").to(get_new_category))
             .service(web::resource("/delete_post/{post_id}").route(web::get().to(delete_post)))
+            .service(web::resource("/delete_category/{category_id}").route(web::get().to(delete_category)))
             .service(
                 web::resource("/to_update_post/{post_id}").route(web::get().to(to_update_post)),
             )

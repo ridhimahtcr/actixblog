@@ -179,5 +179,32 @@ function filterPosts() {
     }
   });
 }
+
+function fetchCategories() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/categories", true);
+
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      var categories = JSON.parse(xhr.responseText);
+
+      var categoryFilter = document.getElementById("categoryFilter");
+
+      categories.forEach(function(category) {
+        var option = document.createElement("option");
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+      });
+    }
+  };
+
+  xhr.send();
+}
+
+// Call the fetchCategories function to populate the category options
+fetchCategories();
+
+
 </script>
 </html>
