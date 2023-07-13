@@ -49,6 +49,26 @@ pub async fn get_all_categories_controller() -> HttpResponse {
         .body(html)
 }
 
+pub async fn get_all_categories_controller_public() -> HttpResponse {
+    let mut handlebars = handlebars::Handlebars::new();
+    let index_template = fs::read_to_string("templates/categories_public.hbs").unwrap();
+    handlebars
+        .register_template_string("all_categories", &index_template)
+        .expect("TODO: panic message");
+
+    let all_categories = get_all_categories_database()
+        .await
+        .expect("TODO: panic message");
+
+    let html = handlebars
+        .render("all_categories", &json!({ "z": &all_categories }))
+        .unwrap();
+
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html)
+}
+
 pub async fn specific_category_controller(path: web::Path<String>) -> HttpResponse {
     let mut category_input = path.into_inner();
 
@@ -86,3 +106,4 @@ pub async fn get_new_category() -> HttpResponse {
         .content_type("text/html; charset=utf-8")
         .body(html)
 }
+

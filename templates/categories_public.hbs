@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Blog</title>
-<style>
+    <style>
         <style>
         table {
             border-collapse: collapse;
@@ -66,28 +66,24 @@ div.content {
 
 </div>
 <div class="content" >
-        <a href="/categories/new">
-            <button class="success-button" style="float: right;">Create New Category</button>
-        </a>
 
-<table>
-    <thead>
-    <tr>
-        <th>Category</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#each z}}
-        <tr data-category="{{this.category}}">
-            <td>   {{this.name}}
-            <td>
-            <button onclick="confirmDelete('{{this.category_id}}')">Delete</button>
-            </td>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Category</th>
+
         </tr>
-    {{/each}}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        {{#each z}}
+            <tr data-category="{{this.category}}">
+                <td>   {{this.name}}
+
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
 </div>
 </body>
 

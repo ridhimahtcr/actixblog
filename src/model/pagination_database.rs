@@ -57,3 +57,13 @@ pub async fn pagination_main(params: web::Query<PaginateParams>) -> Result<Vec<P
 
     Ok(paginated_post)
 }
+
+pub async fn pagination_logic(params: web::Query<PaginateParams>) -> Result<Vec<Posts>, MyError> {
+    let page = params.page.unwrap_or(1);
+    let per_page = params.per_page.unwrap_or(3);
+    let posts_pagination: Vec<Posts> = select_posts().await.expect("message");
+    let paginated_users = paginate(posts_pagination.clone(), page, per_page);
+
+    let _posts_per_page_length = posts_pagination.len();
+    Ok(paginated_users)
+}

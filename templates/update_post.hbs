@@ -8,19 +8,55 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<body>
-<p>
-    {{update_post}}
-</p>
-<h1> UPDATE POST</h1>
-<form action="/edit" method="post">
+<body style="background-color: $off-white;
+    color: $black;
+    font-family: $sans-serif;
+    min-height: 100vh;
+    width: 100%;
 
 
-    <input type="text" name="title" placeholder="title"  class="form-control"><br>
-    <input type="text" name="description" placeholder="description"  class="form-control"><br>
-    <input type="text" name="category_id" placeholder="category_id"  class="form-control"><br>
-    <input type="submit" value="Submit">
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    ">
+
+<h1 style="font-size: 50px;
+      margin: 15vh 0 2rem;    margin-left: 780px;"> UPDATE POST</h1>
+<form action="/edit" method="post" style="align-self: center;">
+
+
+    <input type="text" name="title" placeholder="title"  class="form-control" style="width: clamp(120px, 50vw, 420px);
+      height: 2.5rem;
+      padding: 0 1.25rem;
+      border: 1px solid $black;
+      border-radius: 2px;
+      margin: 0.625rem auto;
+      transition: all 250ms;
+      @media (min-width: 768px) {
+        width: clamp(120px, 35vw, 420px);"><br>
+    <input type="text" name="description" placeholder="description"  class="form-control" style="width: clamp(120px, 50vw, 420px);
+      height: 2.5rem;
+      padding: 0 1.25rem;
+      border: 1px solid $black;
+      border-radius: 2px;
+      margin: 0.625rem auto;
+      transition: all 250ms;
+      @media (min-width: 768px) {
+        width: clamp(120px, 35vw, 420px);"><br>
+    <input type="text" name="category_id" placeholder="category_id"  class="form-control" style="width: clamp(120px, 50vw, 420px);
+      height: 2.5rem;
+      padding: 0 1.25rem;
+      border: 1px solid $black;
+      border-radius: 2px;
+      margin: 0.625rem auto;
+      transition: all 250ms;
+      @media (min-width: 768px) {
+        width: clamp(120px, 35vw, 420px);"><br>
+    <input type="submit" value="Submit" style="margin-left: 200px;">
 
 </form>
 </body>
+
+
+
 </html>

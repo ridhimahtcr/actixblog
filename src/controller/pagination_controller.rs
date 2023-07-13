@@ -1,5 +1,5 @@
 use crate::model::database::{get_all_categories, Posts};
-use crate::model::pagination_database::PaginateParams;
+use crate::model::pagination_database::{pagination_logic, PaginateParams};
 use actix_web::{web, HttpResponse};
 use serde_json::json;
 use sqlx::postgres::PgPoolOptions;
@@ -56,13 +56,13 @@ pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse
     let posts_per_page = total_posts_length / 3;
     let posts_per_page = posts_per_page as i64;
 
-    let mut pages_count = Vec::new();
+    let mut page_count = Vec::new();
 
     for i in 0..posts_per_page {
-        pages_count.push(i + 1_i64);
+        page_count.push(i + 1_i64);
     }
 
-    println!("{:?}", pages_count);
+    println!("{:?}", page_count);
 
     let mut handlebars = handlebars::Handlebars::new();
     let index_template = fs::read_to_string("templates/pagination.hbs").unwrap();
@@ -70,16 +70,17 @@ pub async fn pagination_show(params: web::Query<PaginateParams>) -> HttpResponse
         .register_template_string("pagination", &index_template)
         .expect("TODO: panic message");
 
+    let paginator = pagination_logic(params.clone()).await.expect("Aasd");
+
     let _current_page = &params.page;
+    let exact_posts_only = select_specific_pages_post(_current_page)
+        .await
+        .expect("message");
 
-    let _all_category = get_all_categories().await.expect("categories");
+    let all_category = get_all_categories().await.expect("categories");
 
-    let html = handlebars
-        .render(
-            "pagination",
-            &json!({"t":&total_posts_length,"page_count":pages_count}),
-        )
-        .unwrap();
+    let html = handlebars.render("admin_page", &json!({"a":&paginator,"tt":&total_posts_length,"pages_count":page_count,"page":exact_posts_only,"o":all_category}))
+        .unwrap() ;
 
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
@@ -105,7 +106,7 @@ pub async fn pagination_query() -> i64 {
     let mut count: i64 = 0;
 
     for row in rows {
-        let title: i64 = row.get("count");
+        let title: i64 = row.try_get("count").unwrap();
         count += title;
         println!("{:?}", title);
     }
@@ -114,20 +115,59 @@ pub async fn pagination_query() -> i64 {
 }
 
 pub async fn select_specific_pages_post(
-    start_page: i32,
-    db: &Pool<Postgres>,
-) -> Result<Vec<Posts>, anyhow::Error> {
-    let start_page = start_page;
+    start_page: &Option<i32>,
+) -> Result<Vec<Posts>, sqlx::Error> {
+    let start_page = start_page.unwrap();
+
     let mut new_start_page = start_page;
     if start_page > 1 {
         new_start_page += 2
     }
 
+    dotenv::dotenv().expect("Unable to load environment variables from .env file");
+
+    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
+
+    let pool = PgPoolOptions::new()
+        .max_connections(100)
+        .connect(&db_url)
+        .await
+        .expect("Unable to connect to Postgres");
+
     let selected_posts = sqlx::query_as::<_, Posts>("select * from posts limit  $1 offset $2")
         .bind(new_start_page + 3)
         .bind(new_start_page)
-        .fetch_all(db)
-        .await?;
+        .fetch_all(&pool)
+        .await
+        .unwrap();
 
     Ok(selected_posts)
+}
+
+pub async fn category_pagination_logic(category_input: &String) -> i64 {
+    dotenv::dotenv().expect("Unable to load environment variables from .env file");
+
+    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
+
+    let pool = PgPoolOptions::new()
+        .max_connections(100)
+        .connect(&db_url)
+        .await
+        .expect("Unable to connect to Postgres");
+
+    let category_input = category_input.to_string();
+    let category_id = category_input.parse::<i32>().unwrap();
+
+    let rows = sqlx::query("SELECT COUNT(*) FROM posts where category_id=$1")
+        .bind(category_id)
+        .fetch_all(&pool)
+        .await
+        .unwrap();
+
+    let mut count: i64 = 0;
+    for row in rows {
+        let title: i64 = row.try_get("count").unwrap();
+        count += title;
+    }
+    count
 }

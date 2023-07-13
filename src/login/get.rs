@@ -1,8 +1,21 @@
 use actix_web::{http::header::ContentType, HttpResponse};
 use actix_web_flash_messages::IncomingFlashMessages;
+use serde_json::json;
 use std::fmt::Write;
+use std::fs;
 
 pub async fn login_form() -> HttpResponse {
+    let mut handlebars = handlebars::Handlebars::new();
+
+    let index_template = fs::read_to_string("templates/login.hbs").unwrap();
+    handlebars
+        .register_template_string("login", &index_template)
+        .expect("TODO: panic message");
+
+    let html = handlebars
+        .render("login", &json!({"yy":"message"}))
+        .unwrap();
+
     HttpResponse::Ok()
         .content_type(ContentType::html())
         .body(format!(
@@ -25,7 +38,7 @@ pub async fn login_form() -> HttpResponse {
         margin: auto;
         margin: 20 0 0 450px;
         padding: 80px;
-        background: #838988;
+        background: #d5e6e3;
         border-radius: 15px ;">
         <label style ="color: #090b0b;
     font-size: 17px;    font-family: cursive;"><b>  Username
@@ -39,7 +52,7 @@ pub async fn login_form() -> HttpResponse {
         </label>
         <input type="Password" name="Pass" id="Pass" placeholder="Password">
         <br><br>
-        <input type="button" name="log" id="log" value="Log In Here" style ="  display: flex;
+        <input type="button" onclick="window.location.href='/homepage';" name="log" id="log" value="Log In Here" style ="  display: flex;
   justify-content: center;
   align-items: center;
   margin-left : 30%;

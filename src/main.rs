@@ -5,10 +5,11 @@ mod controller;
 mod login;
 mod model;
 
-use crate::controller::category_controller::get_all_categories_controller;
+use crate::controller::category_controller::{get_all_categories_controller, get_all_categories_controller_public, get_new_category};
 
 use crate::controller::pagination_controller::pagination_show;
 use crate::controller::post_controller::{delete_post, get_new_post, to_update_post};
+use crate::controller::public::get_all_public_posts;
 use crate::controller::single_post_controller::get_single_post;
 use crate::login::get::login_form;
 use crate::login::post::{check_user, login, logout};
@@ -23,7 +24,8 @@ async fn main() -> Result<()> {
         .init();
     HttpServer::new(|| {
         App::new()
-            .service(web::resource("/").to(get_all_posts))
+            .service(web::resource("/homepage").to(get_all_posts))
+            .service(web::resource("/").to(get_all_public_posts))
             .service(web::resource("/posts/{post_id}").to(get_single_post))
             .service(web::resource("/posts").to(pagination_show))
             .service(web::resource("/admin").to(pagination_show))
@@ -34,11 +36,13 @@ async fn main() -> Result<()> {
             .service(web::resource("/check").to(check_user))
             .service(web::resource("/register").to(get_register_page))
             .service(web::resource("/posts/new").to(get_new_post))
+            .service(web::resource("/categories/new").to(get_new_category))
             .service(web::resource("/delete_post/{post_id}").route(web::get().to(delete_post)))
             .service(
                 web::resource("/to_update_post/{post_id}").route(web::get().to(to_update_post)),
             )
             .service(web::resource("/category").to(get_all_categories_controller))
+            .service(web::resource("/categories_public").to(get_all_categories_controller_public))
     })
     .bind("127.0.0.1:8080")?
     .run()
