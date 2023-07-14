@@ -1,4 +1,7 @@
-use crate::model::category_database::{category_controller_database_function, category_database, create_new_category_database, delete_category_database, get_all_categories_database};
+use crate::model::category_database::{
+    category_controller_database_function, category_database, create_new_category_database,
+    delete_category_database, get_all_categories_database,
+};
 use actix_web::{web, HttpResponse};
 use serde_json::json;
 use std::fs;
@@ -37,7 +40,7 @@ pub async fn get_all_categories_controller() -> HttpResponse {
         .await
         .expect("TODO: panic message");
 
-    println!("{:?}",all_categories);
+    println!("{:?}", all_categories);
 
     let html = handlebars
         .render("all_categories", &json!({ "z": &all_categories }))
@@ -129,4 +132,3 @@ pub async fn delete_category(to_delete: web::Path<String>) -> HttpResponse {
         .content_type("text/html; charset=utf-8")
         .body(html)
 }
-

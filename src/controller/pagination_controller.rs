@@ -51,7 +51,7 @@ pub async fn get_count_posts() -> HttpResponse {
 }
 
 pub async fn pagination_show(path: web::Path<i32>) -> HttpResponse {
-    println!("{:?}",path);
+    println!("{:?}", path);
     let total_posts_length: u32 = pagination_query().await as u32;
 
     let posts_per_page = total_posts_length / 3;
@@ -59,17 +59,16 @@ pub async fn pagination_show(path: web::Path<i32>) -> HttpResponse {
 
     let mut page_count = Vec::new();
     let page = path.into_inner();
-    let params = PaginateParams{page:Some(page), per_page:Some(3)};
-
-
+    let params = PaginateParams {
+        page: Some(page),
+        per_page: Some(3),
+    };
 
     for i in 0..posts_per_page {
         page_count.push(i + 1_i64);
     }
 
     println!("{:?}", page_count);
-
-
 
     let mut handlebars = handlebars::Handlebars::new();
     let index_template = fs::read_to_string("templates/pagination.hbs").unwrap();

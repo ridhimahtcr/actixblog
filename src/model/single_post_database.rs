@@ -21,7 +21,7 @@ pub async fn query_single_post(data: i32) -> Result<Vec<Posts>, Error> {
     .await
     .unwrap();
 
-    println!("🍓{:?}\t", posts);
+    //println!("🍓{:?}\t", posts);
 
     Ok(posts)
 }

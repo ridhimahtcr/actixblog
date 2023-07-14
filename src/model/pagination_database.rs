@@ -7,7 +7,7 @@ use serde::Deserialize;
 #[derive(Deserialize, Copy, Clone)]
 pub struct PaginateParams {
     pub page: Option<i32>,
-  pub(crate) per_page: Option<i32>,
+    pub(crate) per_page: Option<i32>,
 }
 
 #[derive(Deserialize)]
@@ -58,8 +58,8 @@ pub async fn pagination_main(params: web::Query<PaginateParams>) -> Result<Vec<P
     Ok(paginated_post)
 }
 
-pub async fn pagination_logic(params:PaginateParams) -> Result<Vec<Posts>, MyError> {
-    println!("ridhima{:?}",params.page);
+pub async fn pagination_logic(params: PaginateParams) -> Result<Vec<Posts>, MyError> {
+    println!("ridhima{:?}", params.page);
     let page = params.page.unwrap_or(1);
     let per_page = params.per_page.unwrap_or(3);
     let posts_pagination: Vec<Posts> = select_posts().await.expect("message");
@@ -67,5 +67,4 @@ pub async fn pagination_logic(params:PaginateParams) -> Result<Vec<Posts>, MyErr
 
     let _posts_per_page_length = posts_pagination.len();
     Ok(paginated_users)
-
 }

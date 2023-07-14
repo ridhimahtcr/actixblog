@@ -4,6 +4,7 @@ use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::PgPool;
+use std::str::FromStr;
 
 #[derive(thiserror::Error, Debug)]
 pub enum AuthError {
@@ -18,31 +19,34 @@ pub struct Credentials {
     pub password: Secret<String>,
 }
 
-#[tracing::instrument(name = "Get stored credentials", skip(username, pool))]
+#[tracing::instrument(name = "Get stored credentials", skip(username /*, pool*/))]
 async fn get_stored_credentials(
     username: &str,
-    pool: &PgPool,
-) -> Result<Option<(i32, Secret<String>)>, anyhow::Error> {
-    let row = sqlx::query!(
-        r#"
-        SELECT user_id, password
-        FROM users
-        WHERE username = $1
-        "#,
-        username,
-    )
-    .fetch_optional(pool)
-    .await
-    .context("Failed to performed a query to retrieve stored credentials.")?
-    .map(|row| (row.user_id, Secret::new(row.password)));
-    Ok(row)
+    //pool: &PgPool,
+) -> Result<Option<(uuid::Uuid, Secret<String>)>, anyhow::Error> {
+    //let row = sqlx::query!(
+    //    r#"
+    //    SELECT user_id, password
+    //    FROM users
+    //    WHERE username = $1
+    //    "#,
+    //    username,
+    //)
+    //.fetch_optional(pool)
+    //.await
+    //.context("Failed to performed a query to retrieve stored credentials.")?
+    //.map(|row| (row.user_id, Secret::new(row.password)));
+    Ok(Some((
+        uuid::Uuid::from_str("222bf82e-759f-4284-af02-90abdc061289")?,
+        Secret::new("123_password".to_string()),
+    )))
 }
 
-#[tracing::instrument(name = "Validate credentials", skip(credentials, pool))]
+#[tracing::instrument(name = "Validate credentials", skip(credentials/*, pool*/))]
 pub async fn validate_credentials(
     credentials: Credentials,
-    pool: &PgPool,
-) -> Result<i32, AuthError> {
+    //pool: &PgPool,
+) -> Result<uuid::Uuid, AuthError> {
     let mut user_id = None;
     let mut expected_password_hash = Secret::new(
         "$argon2id$v=19$m=15000,t=2,p=1$\
@@ -52,7 +56,7 @@ pub async fn validate_credentials(
     );
 
     if let Some((stored_user_id, stored_password_hash)) =
-        get_stored_credentials(&credentials.username, pool).await?
+        get_stored_credentials(&credentials.username /*, pool*/).await?
     {
         user_id = Some(stored_user_id);
         expected_password_hash = stored_password_hash;

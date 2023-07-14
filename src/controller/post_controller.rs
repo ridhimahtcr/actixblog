@@ -7,9 +7,6 @@ use actix_web::{web, HttpResponse};
 use serde_json::json;
 use std::fs;
 
-
-
-
 pub async fn get_new_post() -> HttpResponse {
     let mut handlebars = handlebars::Handlebars::new();
 
@@ -19,38 +16,39 @@ pub async fn get_new_post() -> HttpResponse {
         .expect("TODO: panic message");
 
     /*let categories = get_all_categories_database()
-        .await
-        .expect("TODO: panic message");
-*/
+            .await
+            .expect("TODO: panic message");
+    */
 
-    let html = handlebars
-        .render("new_post", &json!({}))
-        .unwrap();
+    let html = handlebars.render("new_post", &json!({})).unwrap();
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(html)
 }
 
-
-
 pub async fn receive_new_posts(new_post: web::Form<Posts>) -> HttpResponse {
     let mut handlebars = handlebars::Handlebars::new();
     let index_template = fs::read_to_string("templates/message.hbs").unwrap();
     /*handlebars
-        .register_template_string("message_display", &index_template)
-        .expect("TODO: panic message");*/
+    .register_template_string("message_display", &index_template)
+    .expect("TODO: panic message");*/
 
     let new_post = new_post.into_inner();
 
-    create_new_post_database(&new_post.title.to_string(), &new_post.description.to_string(), new_post.post_id, &new_post.name.to_string())
-        .await
-        .expect(" panic message");
+    create_new_post_database(
+        &new_post.title.to_string(),
+        &new_post.description.to_string(),
+        new_post.post_id,
+        &new_post.name.to_string(),
+    )
+    .await
+    .expect(" panic message");
 
     let success_message = "the post created successfully";
 
     /*let html = handlebars
-        .render("message_display", &json!({ "message": success_message }))
-        .unwrap();*/
+    .render("message_display", &json!({ "message": success_message }))
+    .unwrap();*/
 
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
@@ -81,7 +79,7 @@ pub async fn delete_post(to_delete: web::Path<String>) -> HttpResponse {
         .body(html)
 }
 
-pub async fn to_update_post(post_id:web::Path<i32> ) -> HttpResponse {
+pub async fn to_update_post(post_id: web::Path<i32>) -> HttpResponse {
     let mut handlebars = handlebars::Handlebars::new();
     let index_template = fs::read_to_string("templates/update_post.hbs").unwrap();
     handlebars
@@ -90,10 +88,9 @@ pub async fn to_update_post(post_id:web::Path<i32> ) -> HttpResponse {
 
     //let update_post = update_post.into_inner();
 
-
     /*update_post_database(&update_post.title.to_string(), &update_post.description.to_string(), update_post.post_id, &update_post.name.to_string())
-        .await
-        .expect(" panic message");*/
+    .await
+    .expect(" panic message");*/
 
     let html = handlebars
         .render("update_post", &json!({ "post_id": post_id.into_inner() }))
@@ -104,28 +101,31 @@ pub async fn to_update_post(post_id:web::Path<i32> ) -> HttpResponse {
         .body(html)
 }
 
-pub async fn to_edit_post(update_post:web::Form<Posts> ) -> HttpResponse {
+pub async fn to_edit_post(update_post: web::Form<Posts>) -> HttpResponse {
     let mut handlebars = handlebars::Handlebars::new();
     let index_template = fs::read_to_string("templates/update_post.hbs").unwrap();
     /*handlebars
-        .register_template_string("update_post", &index_template)
-        .expect("TODO: panic message");*/
+    .register_template_string("update_post", &index_template)
+    .expect("TODO: panic message");*/
 
     let update_post = update_post.into_inner();
 
+    update_post_database(
+        &update_post.title.to_string(),
+        &update_post.description.to_string(),
+        update_post.post_id,
+        &update_post.name.to_string(),
+    )
+    .await
+    .expect(" panic message");
 
-    update_post_database(&update_post.title.to_string(), &update_post.description.to_string(), update_post.post_id, &update_post.name.to_string())
-        .await
-        .expect(" panic message");
-
-   /* let html = handlebars
-        .render("update_post", &json!({ "update_post": &update_post }))
-        .unwrap();*/
+    /* let html = handlebars
+    .render("update_post", &json!({ "update_post": &update_post }))
+    .unwrap();*/
 
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body("Successfully edited")
-
 }
 
 pub async fn receive_updated_post(

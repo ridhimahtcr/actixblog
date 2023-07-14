@@ -14,10 +14,11 @@ pub async fn get_all_categories_database() -> Result<Vec<Categories>, Error> {
         .await
         .expect("Unable to connect to Postgres");
 
-    let all_categories = sqlx::query_as::<_, Categories>("select name, category_id from categories")
-        .fetch_all(&pool)
-        .await
-        .expect("Unable to");
+    let all_categories =
+        sqlx::query_as::<_, Categories>("select name, category_id from categories")
+            .fetch_all(&pool)
+            .await
+            .expect("Unable to");
 
     Ok(all_categories)
 }
@@ -93,7 +94,6 @@ pub async fn create_new_category_database(name: &String) -> Result<(), Error> {
 
     Ok(())
 }
-
 
 pub async fn delete_category_database(delete_string: String) -> Result<(), Error> {
     dotenv::dotenv().expect("Unable to load environment variables from .env file");

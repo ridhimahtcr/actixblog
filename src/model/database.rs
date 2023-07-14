@@ -84,7 +84,7 @@ pub async fn select_all_from_table() -> Result<Vec<String>, Error> {
         let description: String = row.get("description");
         let name: String = row.get("name");
         let all_posts_string = title + " " + &*description + " " + &*name;
-        println!("---->{:?}",all_posts_string);
+        println!("---->{:?}", all_posts_string);
         all_posts.push(all_posts_string);
     }
 

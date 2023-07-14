@@ -26,7 +26,7 @@ pub async fn get_all_posts() -> HttpResponse {
         pages_count.push(i + 1_i64);
     }
 
-    println!("{:?}", pages_count);
+    //println!("{:?}", pages_count);
 
     let html = handlebars
         .render(
@@ -35,7 +35,7 @@ pub async fn get_all_posts() -> HttpResponse {
         )
         .unwrap();
 
-    println!("{}", html);
+    //println!("{}", html);
     HttpResponse::Ok()
         .content_type("text/html; charset=utf-8")
         .body(html)

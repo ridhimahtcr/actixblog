@@ -1,4 +1,4 @@
-use crate::login::post::user;
+use crate::login::post::User;
 use crate::model::register_database::register_new_user_database;
 use actix_web::{web, HttpResponse};
 use serde::Deserialize;
@@ -24,7 +24,7 @@ pub async fn get_register_page() -> HttpResponse {
         .body(html)
 }
 
-pub async fn get_data_from_register_page(form: web::Form<user>) -> HttpResponse {
+pub async fn get_data_from_register_page(form: web::Form<User>) -> HttpResponse {
     let user = &form.username;
     let password = &form.password;
 
