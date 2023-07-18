@@ -1,72 +1,117 @@
-
-<!DOCTYPE html>
 <html>
 <head>
-    <title>New POST</title>
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
 
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+body {
+  margin: 0;
+  font-family: "Lato", sans-serif;
+}
 
-<body style="background-color: $off-white;
-    color: $black;
-    font-family: $sans-serif;
-    min-height: 100vh;
+h1{
+margin-left: 50%;
+}
+
+.sidebar {
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+  position: fixed;
+  height: 100%;
+  overflow: auto;
+  background-image : url("https://img.freepik.com/free-vector/abstract-memphis-mobile-phone-wallpaper_53876-154032.jpg");
+      background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+
+
+
+.sidebar a {
+  display: block;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+}
+
+.sidebar a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+.sidebar a:hover:not(.active) {
+  background-color: #555;
+  color: white;
+}
+
+div.content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+   background-image : url("https://img.freepik.com/free-photo/blue-smoke-background-textured-wallpaper-high-resolution_53876-128239.jpg?w=2000");
+      background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+}
+
+@media screen and (max-width: 700px) {
+  .sidebar {
     width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
+}
+
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
+  }
+}
+</style>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
 
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    ">
+<div class="sidebar">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <a class="active" href="#home">Home</a>
+    <a href="/admin">Posts</a>
+    <a href="/admin/categories">Categories</a>
+</div>
 
-<h1 style="font-size: 50px;
-      margin: 15vh 0 2rem;    margin-left: 780px;"> NEW POST</h1>
-<form action="/admin/posts/new" method="post" style="align-self: center;">
+<div class="content">
+<h1 style="margin-left: 30%;"> CREATE NEW POST</h1>
+<form action="http://localhost:8080/admin/posts" method="post">
+    <input type="text" name="id" placeholder="Please enter Post ID"  class="form-control"  ><br>
+    <input type="text" name="title" placeholder="Please enter TITLE"  class="form-control" ><br>
+    <input type="text" name="description" placeholder="Please enter DESCRIPTION"  class="form-control" ><br>
+   <input type="text" name="category_id" placeholder="Please enter CATEGORY ID"  class="form-control" ><br>
 
+<!--<select name="text" id="name" name="name">-->
 
-    <input type="text" name="post_id" placeholder="post_id"   class="form-control" style="width: clamp(120px, 50vw, 420px);
-      height: 2.5rem;
-      padding: 0 1.25rem;
-      border: 1px solid $black;
-      border-radius: 2px;
-      margin: 0.625rem auto;
-      transition: all 250ms;
-      @media (min-width: 768px) {
-        width: clamp(120px, 35vw, 420px);"><br>
-    <input type="text" name="title" placeholder="title"  class="form-control" style="width: clamp(120px, 50vw, 420px);
-      height: 2.5rem;
-      padding: 0 1.25rem;
-      border: 1px solid $black;
-      border-radius: 2px;
-      margin: 0.625rem auto;
-      transition: all 250ms;
-      @media (min-width: 768px) {
-        width: clamp(120px, 35vw, 420px);"><br>
-    <input type="text" name="description" placeholder="description"  class="form-control" style="width: clamp(120px, 50vw, 420px);
-      height: 2.5rem;
-      padding: 0 1.25rem;
-      border: 1px solid $black;
-      border-radius: 2px;
-      margin: 0.625rem auto;
-      transition: all 250ms;
-      @media (min-width: 768px) {
-        width: clamp(120px, 35vw, 420px);"><br>
-    <input type="text" name="name" placeholder="name"  class="form-control" style="width: clamp(120px, 50vw, 420px);
-      height: 2.5rem;
-      padding: 0 1.25rem;
-      border: 1px solid $black;
-      border-radius: 2px;
-      margin: 0.625rem auto;
-      transition: all 250ms;
-      @media (min-width: 768px) {
-        width: clamp(120px, 35vw, 420px);"><br>
-    <input type="submit" value="Submit" style="margin-left: 200px;">
+    {{!--#each all_categories}}
+        <option value="{{this.name}}"  placeholder="name" name="name">{{this.name}}</option>
 
+{{/each--}}
+<!--</select>-->
+
+<!--        <input type="text" name="name" placeholder="name"><br>-->
+    <input type="submit" value="Submit" style="margin-left: 40%;">
 </form>
+</div>
 </body>
-
-
 
 </html>

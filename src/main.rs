@@ -1,61 +1,143 @@
-use crate::controller::homepage::get_all_posts;
-
-mod authentication;
 mod controller;
-mod login;
 mod model;
-
-use crate::controller::category_controller::{delete_category, get_all_categories_controller, get_all_categories_controller_public, get_new_category};
-
-use crate::controller::pagination_controller::pagination_show;
-use crate::controller::post_controller::{delete_post, get_new_post, receive_new_posts, to_edit_post, to_update_post};
-use crate::controller::public::get_all_public_posts;
+use crate::controller::admin_function::{admin_posts_display, display_catgory_admin_page};
+use crate::controller::authentication::login::{
+    check_user, get_data_after_login, login_page, logout,
+};
+use crate::controller::authentication::register::{
+    get_data_from_register_page, get_registration_page,
+};
+use crate::controller::category_controller::{
+    delete_category, get_all_categories_controller, get_category_with_pagination, get_new_category,
+    receive_new_category, receive_updated_category, to_update_category,
+};
+use crate::controller::common_controller::{common_page_controller, redirect_user};
+use crate::controller::constants::ConfigurationConstants;
+use crate::controller::pagination_controller::pagination_display;
+use crate::controller::posts_controller::{
+    delete_post, get_new_post, page_to_update_post, receive_new_posts, receive_updated_post,
+};
 use crate::controller::single_post_controller::get_single_post;
-use crate::login::get::login_form;
-use crate::login::post::{check_user, login, logout};
-use crate::login::register::get_register_page;
+use actix_identity::IdentityMiddleware;
+use actix_session::config::PersistentSession;
+use actix_session::storage::CookieSessionStore;
+use actix_session::SessionMiddleware;
+use actix_web::cookie::Key;
 use actix_web::{web, App, HttpServer, Result};
-use crate::model::post_database::update_post_database;
+use actix_web_lab::middleware::from_fn;
+use handlebars::Handlebars;
+use magic_crypt::new_magic_crypt;
+use sqlx::postgres::PgPoolOptions;
+use warp::get;
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    tracing_subscriber::fmt()
-        // Configure formatting settings.
-        // Set the subscriber as the default.
-        .init();
-    HttpServer::new(|| {
+pub(crate) const COOKIE_DURATION: actix_web::cookie::time::Duration =
+    actix_web::cookie::time::Duration::minutes(30);
+
+#[actix_web::main]
+async fn main() -> Result<(), anyhow::Error> {
+    std::env::set_var("RUST_LOG", "debug");
+    env_logger::init();
+    let secret_key = Key::generate();
+    #[cfg(feature = "cors_for_local_development")]
+    let cookie_secure = false;
+    #[cfg(not(feature = "cors_for_local_development"))]
+    let cookie_secure = true;
+    let mut handlebars = Handlebars::new();
+    handlebars.register_templates_directory(".hbs", "./templates/")?;
+    dotenv::dotenv()?;
+    let value = std::env::var("MAGIC_KEY")?;
+    let mcrypt = new_magic_crypt!(value, 256); //Creates an instance of the magic crypt library/crate.
+    let db_url = std::env::var("DATABASE_URL")?;
+    let pool = PgPoolOptions::new()
+        .max_connections(100)
+        .connect(&db_url)
+        .await?;
+
+    let config = ConfigurationConstants {
+        magic_key: mcrypt,
+        database_connection: pool,
+    };
+    let configure = web::Data::new(config.clone());
+
+    HttpServer::new(move || {
         App::new()
-            .service(web::resource("/homepage").to(get_all_posts))
-            .service(web::resource("/").to(get_all_public_posts))
-            .service(web::resource("/posts/{post_id}").to(get_single_post))
-            .service(web::resource("/posts").to(pagination_show))
-            .service(web::resource("/page/{page_id}").to(pagination_show))
-            .service(web::resource("/").to(pagination_show))
-            .route("/login", web::get().to(login_form))
-            .route("/login", web::post().to(login))
-            .service(web::resource("/logout").to(logout))
-            .service(web::resource("/check").to(check_user))
-            .service(web::resource("/register").to(get_register_page))
-            .service(web::resource("/admin/categories/new").to(get_new_category))
-            .service(web::resource("/delete_post/{post_id}").route(web::get().to(delete_post)))
-            .service(web::resource("/page/delete_post/{post_id}").route(web::get().to(delete_post)))
-            .service(web::resource("/delete_category/{category_id}").route(web::get().to(delete_category)))
+            .app_data(web::Data::new(handlebars.clone()))
+            .app_data(configure.clone())
+            .wrap(IdentityMiddleware::default())
+            .wrap(
+                SessionMiddleware::builder(CookieSessionStore::default(), secret_key.clone())
+                    .cookie_name("adf-obdd-service-auth".to_owned())
+                    .cookie_secure(cookie_secure)
+                    .session_lifecycle(PersistentSession::default().session_ttl(COOKIE_DURATION))
+                    .build(),
+            )
+            .service(web::resource("/").to(redirect_user))
+            .service(web::resource("/admin/posts/new").to(get_new_post))
+            .service(web::resource("/admin/posts").route(web::post().to(receive_new_posts)))
+            //change ui
             .service(
-                web::scope("/admin")
-                    .route("/edit_form/{post_id}", web::get().to(to_update_post))
-                    .route("/edit/{post_id}" ,web::post().to(to_edit_post))
-                    .route("/posts/new_form", web::get().to(get_new_post))
-                    .route("/posts/new" ,web::post().to(receive_new_posts))
+                web::resource("/admin/posts/{post_id}").route(web::get().to(admin_posts_display)), // .route(web::delete().to(delete_post))
+            )
+            .service(
+                web::resource("/admin/posts/{post_id}/edit")
+                    .route(web::get().to(page_to_update_post))
+                    .route(web::post().to(receive_updated_post)),
+            )
+            .service(web::resource("/posts").route(web::get().to(common_page_controller)))
+            .service(web::resource("/posts/{post_id}").route(web::get().to(get_single_post)))
+            .service(
+                web::resource(" /posts/page/{page_number}")
+                    .route(web::get().to(common_page_controller)),
+            )
+            .service(
+                web::resource("/posts/category/{category_id}").to(get_category_with_pagination),
             )
 
 
-            .service(web::resource("/category").to(get_all_categories_controller))
-            .service(web::resource("/categories_public").to(get_all_categories_controller_public))
+            .service(web::resource("/admin").to(pagination_display))
+            .service(
+                web::resource("/admin/categories/new")
+                    .route(web::get().to(get_new_category))
+                    .route(web::post().to(receive_new_category)),
+            )
+            .service(
+                web::resource("/admin/category/{title}/edit")
+                    .route(web::get().to(to_update_category))
+                    .route(web::post().to(receive_updated_category)),
+            )
+            .service(
+                web::resource("/admin/categories")
+                    .route(web::get().to(get_all_categories_controller)),
+            )
+
+            .service(web::resource("/check").to(check_user))
+            .service(
+                web::resource("/admin/post/{post_id}/delete").route(web::get().to(delete_post)),
+            )
+            //change ui
+            .service(
+                web::resource("/admin/categories/{category_id}").to(display_catgory_admin_page),
+            )
+            .service(
+                web::resource("/admin/delete_category/{category_id}/delete")
+                    .route(web::get().to(delete_category)),
+            )
+            .service(
+                web::resource("/login")
+                    .route(web::get().to(login_page))
+                    .route(web::post().to(get_data_after_login)),
+            )
+            .service(web::resource("/logout").to(logout))
+            .service(
+                web::resource("/register")
+                    .route(web::get().to(get_registration_page))
+                    .route(web::post().to(get_data_from_register_page)),
+            )
 
     })
     .bind("127.0.0.1:8080")?
     .run()
-    .await
-    .expect("TODO: panic message");
+    .await?;
+
     Ok(())
 }

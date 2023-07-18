@@ -1,30 +1,34 @@
-use crate::model::single_post_database::query_single_post;
+use crate::controller::constants::ConfigurationConstants;
+use crate::model::single_posts_database::{single_post_search, single_post_structure};
+use actix_web::http::header::ContentType;
 use actix_web::{web, HttpResponse};
+use handlebars::Handlebars;
 use serde_json::json;
-use std::fs;
 
-pub async fn get_single_post(path: web::Path<i32>) -> HttpResponse {
-    // "Post 10"
-    //let mut data=path.into_inner().parse().unwrap();
+pub async fn get_single_post(
+    path: web::Path<String>,
+    config: web::Data<ConfigurationConstants>,
+    handlebars: web::Data<Handlebars<'_>>,
+) -> Result<HttpResponse, actix_web::Error> {
+    let db = &config.database_connection;
+    let titles = path.parse::<i32>().unwrap_or_default();
 
-    let post_id = path.into_inner();
-
-    let mut handlebars = handlebars::Handlebars::new();
-
-    let index_template = fs::read_to_string("templates/single.hbs").unwrap();
-    handlebars
-        .register_template_string("single", &index_template)
-        .expect("TODO: panic message");
-
-    let single_post = query_single_post(post_id)
+    let single_post = single_post_search(titles, db)
         .await
-        .expect("TODO: panic message");
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let single_post_struct = single_post_structure(titles, db)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
 
     let html = handlebars
-        .render("single", &json!({ "q": &single_post }))
-        .unwrap();
+        .render(
+            "single",
+            &json!({"o":&single_post,"single_post":single_post_struct}),
+        )
+        .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(html)
+    Ok(HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(html))
 }

@@ -1,9 +1,7 @@
 [package]
-name = "actixblog"
+name = "blog"
 version = "0.1.0"
 edition = "2021"
-
-
 
 [dependencies]
 sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "postgres", "macros" ] }
@@ -12,30 +10,27 @@ tokio = { version = "1", features = ["full"] }
 actix = "0.12"
 actix-web = "4"
 actix-files = "0.6.2"
-handlebars = "3"
+handlebars = {version="4.3.7" , features=["dir_source"]}
 actix-identity = "0.5"
 actix-session = { version = "0.7", features = [ "cookie-session" ] }
+askama = "0.11"
 serde = "1.0"
 anyhow = "1.0"
 warp = "0.3"
-serde_json = "1.0"
-pagination = "0.3.0"
 futures = "0.3"
-actix-web-flash-messages = "0.4.2"
-reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls", "cookies"] }
-log = "0.4"
-tracing = "0.1.19"
-tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
-tracing-bunyan-formatter = "0.3"
-tracing-log = "0.1.1"
-thiserror = "1.0.24"
-serde-aux = "4"
-unicode-segmentation = "1.7.1"
-rand = { version = "0.8", features=["std_rng"] }
-base64 = "0.21.0"
-argon2 = { version = "0.4", features = ["std"] }
-validator = "0.16"
-tracing-actix-web = "0.7"
-secrecy = { version = "0.8", features = ["serde"] }
-actix-web-lab = "0.18"
-uuid = { version = "1", features = ["v4", "serde"] }
+arrow2_convert = "0.4.2"
+serde_json = "1.0.96"
+secrecy = "0.8.0"
+argon2 = "0.5.0"
+argonautica = "0.2.0"
+hmac = "0.12.1"
+jwt = "0.16.0"
+sha2 = "0.10.6"
+actix-http = "3.3.1"
+magic-crypt ="3.1.9"
+cargo-watch = "8.4.0"
+typeof = "1.0.0"
+thiserror = "1.0.40"
+glob = "0.3.1"
+env_logger = "0.10.0"
+actix-web-lab = "0.19.1"

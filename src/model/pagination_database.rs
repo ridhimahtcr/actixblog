@@ -1,18 +1,26 @@
+use crate::controller::constants::ConfigurationConstants;
 use crate::model::database::{select_posts, Posts};
-use actix_web::Error as ActixError;
-use actix_web::{web, ResponseError};
-
+use actix_web::web::Query;
+use actix_web::{web, Error as ActixError};
+use anyhow::anyhow;
 use serde::Deserialize;
+use sqlx::{Pool, Postgres, Row};
 
-#[derive(Deserialize, Copy, Clone)]
-pub struct PaginateParams {
-    pub page: Option<i32>,
-  pub(crate) per_page: Option<i32>,
+#[derive(Deserialize, Copy, Clone, PartialEq)]
+pub struct PaginationParams {
+    pub(crate) page: i32,
 }
 
-#[derive(Deserialize)]
-pub struct TotalPages {
-    total_pages_count: Option<i32>,
+impl Default for PaginationParams {
+    fn default() -> Self {
+        PaginationParams { page: 1 }
+    }
+}
+
+impl std::fmt::Display for PaginationParams {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "PaginationParams(page1: {})", self.page)
+    }
 }
 
 #[derive(Debug)]
@@ -32,40 +40,49 @@ impl std::fmt::Display for MyError {
     }
 }
 
-impl ResponseError for MyError {
-    fn status_code(&self) -> actix_web::http::StatusCode {
-        self.error.as_response_error().status_code()
-    }
+pub fn paginate<T>(items: Vec<T>, _page: i32) -> Vec<T> {
+    let start_index = 1;
+    let _end_index = start_index + 3;
+    items.into_iter().skip(start_index as usize).collect()
 }
 
-pub fn paginate<T>(items: Vec<T>, page: i32, per_page: i32) -> Vec<T> {
-    let start_index = (page - 1) * per_page;
-    let _end_index = start_index + per_page;
-    items
-        .into_iter()
-        .skip(start_index as usize)
-        .take(per_page as usize)
-        .collect()
-}
+pub async fn pagination_logic(
+    mut params: Option<Query<PaginationParams>>,
+    db: &Pool<Postgres>,
+) -> Result<Vec<Posts>, anyhow::Error> {
+    let parameter = params.get_or_insert(Query(PaginationParams::default()));
+    let current_page = parameter.0;
+    let page = current_page.page;
 
-pub async fn pagination_main(params: web::Query<PaginateParams>) -> Result<Vec<Posts>, MyError> {
-    let page = params.page.unwrap_or(1);
-    let per_page = params.per_page.unwrap_or(3);
-
-    let posts_pagination: Vec<Posts> = select_posts().await.expect("message");
-    let paginated_post = paginate(posts_pagination, page, per_page);
-
-    Ok(paginated_post)
-}
-
-pub async fn pagination_logic(params:PaginateParams) -> Result<Vec<Posts>, MyError> {
-    println!("ridhima{:?}",params.page);
-    let page = params.page.unwrap_or(1);
-    let per_page = params.per_page.unwrap_or(3);
-    let posts_pagination: Vec<Posts> = select_posts().await.expect("message");
-    let paginated_users = paginate(posts_pagination.clone(), page, per_page);
-
-    let _posts_per_page_length = posts_pagination.len();
+    let posts_pagination: Vec<Posts> = select_posts(db).await?;
+    let paginated_users = paginate(posts_pagination, page);
     Ok(paginated_users)
+}
 
+pub async fn category_pagination(
+    category_input: &String,
+    db: &Pool<Postgres>,
+) -> Result<i64, anyhow::Error> {
+    let category_input = category_input.to_string();
+    let rows = sqlx::query("SELECT COUNT(*) FROM posts")
+        .fetch_all(db)
+        .await?;
+
+    let final_count: Vec<Result<i64, anyhow::Error>> = rows
+        .into_iter()
+        .map(|row| {
+            let counting_final: i64 = row
+                .try_get("count")
+                .map_err(|_e| anyhow::Error::msg("failed"))?;
+            Ok::<i64, anyhow::Error>(counting_final)
+        })
+        .collect();
+
+    let var = final_count.get(0).ok_or(anyhow!("{}", "error"))?;
+
+    let c = var
+        .as_ref()
+        .map(|i| *i)
+        .map_err(|_e| anyhow::Error::msg("failed"))?;
+    Ok(c)
 }

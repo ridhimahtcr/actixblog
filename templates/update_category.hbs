@@ -17,7 +17,7 @@ body {
   position: fixed;
   height: 100%;
   overflow: auto;
-    background-image : url("https://img.freepik.com/free-vector/abstract-memphis-mobile-phone-wallpaper_53876-154032.jpg");
+   background-image : url("https://img.freepik.com/free-vector/abstract-memphis-mobile-phone-wallpaper_53876-154032.jpg");
       background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -44,7 +44,7 @@ div.content {
   margin-left: 200px;
   padding: 1px 16px;
   height: 1000px;
-     background-image : url("https://img.freepik.com/free-photo/blue-smoke-background-textured-wallpaper-high-resolution_53876-128239.jpg?w=2000");
+    background-image : url("https://img.freepik.com/free-photo/blue-smoke-background-textured-wallpaper-high-resolution_53876-128239.jpg?w=2000");
       background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -82,19 +82,15 @@ div.content {
     <a href="/admin/categories">Categories</a>
 </div>
 
+
 <div class="content">
-    <h1 style="margin-left: 30%;"> UPDATE POST</h1>
- id: {{to_be_updated_post}}
+    <h1 style="margin-left: 30%;"> UPDATE CATEGORY</h1>
+    id: {{to_be_updated_post}}
 </p>
-<form action="http://localhost:8080/admin/posts/{{to_be_updated_post}}/edit" method="post">
-<!--    <input type="text" name="title" value="{{to_be_updated_post}}" placeholder="title"><br>-->
-    <input type="text" name="id" placeholder="id"  class="form-control"><br>
-    <input type="text" name="title" placeholder="title"  class="form-control"><br>
-    <input type="text" name="description" placeholder="description"  class="form-control"><br>
-    <input type="text" name="category_id" placeholder="category_id"  class="form-control"><br>
+<form action="http://localhost:8080/admin/category/{{to_be_updated_post}}/edit" method="post">
+    <input type="text" name="id"  value=""  placeholder="id" class="form-control"><br>
+    <input type="text" name="name"   placeholder="name" class="form-control"><br>
     <input type="submit" value="Submit">
-
-
 </form>
 </div>
 </body>

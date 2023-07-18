@@ -1,7 +1,8 @@
-pub mod category_controller;
-pub(crate) mod homepage;
-pub mod pagination_controller;
-pub mod post_controller;
-pub mod public;
+pub(crate) mod admin_function;
+pub(crate) mod authentication;
+pub(crate) mod category_controller;
+pub(crate) mod common_controller;
+pub(crate) mod constants;
+pub(crate) mod pagination_controller;
+pub(crate) mod posts_controller;
 pub(crate) mod single_post_controller;
-

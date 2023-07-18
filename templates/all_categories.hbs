@@ -1,25 +1,16 @@
-
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Blog</title>
-<style>
-        <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
 
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
 
-        th {
-            background-color: #f2f2f2;
-        }
-        .sidebar {
+body {
+  margin: 0;
+  font-family: "Lato", sans-serif;
+    background-image : "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80;"
+}
+
+.sidebar {
   margin: 0;
   padding: 0;
   width: 200px;
@@ -27,9 +18,19 @@
   position: fixed;
   height: 100%;
   overflow: auto;
+  background-image : url("https://img.freepik.com/free-vector/abstract-memphis-mobile-phone-wallpaper_53876-154032.jpg");
+      background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-/* Sidebar links */
+.sidebars{
+background-image : url("https://img.freepik.com/free-vector/abstract-memphis-mobile-phone-wallpaper_53876-154032.jpg");
+      background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;}
+
+
 .sidebar a {
   display: block;
   color: black;
@@ -37,68 +38,130 @@
   text-decoration: none;
 }
 
-/* Active/current link */
 .sidebar a.active {
   background-color: #04AA6D;
   color: white;
 }
 
-/* Links on mouse-over */
 .sidebar a:hover:not(.active) {
   background-color: #555;
   color: white;
 }
 
-/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 div.content {
   margin-left: 200px;
   padding: 1px 16px;
   height: 1000px;
+    background-image : url("https://img.freepik.com/free-photo/blue-smoke-background-textured-wallpaper-high-resolution_53876-128239.jpg?w=2000");
+      background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  }
+
+@media screen and (max-width: 700px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+  .sidebar a {float: left;}
+  div.content {margin-left: 0;}
 }
-    </style>
-</head>
-<body>
-<h1><center>Categories</center></h1>
-<div class="sidebar">
-    <a href="/homepage">Posts</a>
-    <a class="active" href="/category">Categories</a>
-    <a href="/login">Logout</a>
 
-</div>
-<div class="content" >
-        <a href="/categories/new">
-            <button class="success-button" style="float: right;">Create New Category</button>
-        </a>
-
-<table>
-    <thead>
-    <tr>
-        <th>Category</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    {{#each z}}
-        <tr data-category="{{this.category}}">
-            <td>   {{this.name}}
-            <td>
-            <button onclick="confirmDelete('{{this.category_id}}')">Delete</button>
-            </td>
-        </tr>
-    {{/each}}
-    </tbody>
-</table>
-</div>
-</body>
-
-<script>
-function confirmDelete(category_id) {
-  if (confirm("Are you sure you want to delete this category?")) {
-    // Redirect to the delete URL
-    location.href = '/delete_category/' + category_id;
+@media screen and (max-width: 400px) {
+  .sidebar a {
+    text-align: center;
+    float: none;
   }
 }
-</script>
-</html>
 
+</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+    <script type="text/javascript">
+function get_value() {
+  var x = document.getElementById("cat").value;
+  alert(x);
+}
+
+function myFunctionForDelete(){
+ confirm("Do want to delete the post!");
+  window.location.assign("http:/localhost:8080/admin/post/delete/{{this.id}}/edit")
+
+}
+
+
+</script>
+</head>
+<body>
+
+<div class="sidebar">
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <a class="active" href="/admin?page=1">Home</a>
+    <a href="/admin?page=1">Posts</a>
+    <a href="/admin/categories">Categories</a>
+    <button type="button" class="btn btn-danger" class="btn btn-default btn-sm">
+    <a href="/logout">
+      Log out</a></button>
+</div>
+
+<div class="content">
+
+    <div class="jumbotron  text-center" style="    background-color: #f0ebce;
+    font-family: cursive;
+    font-size: 200px;
+;">
+
+    <h1>Categories</h1>
+    </div>
+
+
+    <button  type="button" class="btn btn-success" style="margin-left: 80%;">
+        <a href =" /admin/categories/new"> Create New Category</a>
+    </button>
+
+    <div class="row">
+        <div class="col-4">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">Categories</th>
+                    <th scope="col" >Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+{{#each all}}
+    <td> <a href="categories/{{this.id}}?page=1">{{this.name}}</td>
+    <td> <button><a  onclick="return confirm('Are you sure?')" href="/admin/delete_category/{{this.id}}/delete"> Delete</a></button>&nbsp;
+   <button> <a href="http://localhost:8080/admin/category/{{this.id}}/edit">Update </a> &nbsp;</button>  </td>
+    </tr>
+{{/each}}
+                </tbody>
+            </table>
+
+</div>
+
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        {{#each pages_count }}
+            <li class="page-item"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
+        {{/each}}
+    </ul>
+</nav>
+
+    </div>
+</div>
+</body>
+</html>
 

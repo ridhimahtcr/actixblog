@@ -1,188 +1,107 @@
-use crate::model::database::{get_all_categories, Posts};
-use crate::model::pagination_database::{pagination_logic, PaginateParams};
-use actix_web::{web, HttpResponse};
+use crate::controller::authentication::login::check_user;
+use crate::controller::common_controller::set_posts_per_page;
+use crate::controller::constants::ConfigurationConstants;
+use crate::model::authentication::login_database::LoginTest;
+use crate::model::category_database::get_all_categories_database;
+use crate::model::pagination_database::{pagination_logic, PaginationParams};
+use crate::model::pagination_logic::post_select_specific_pages;
+use actix_identity::Identity;
+use actix_web::http::header::ContentType;
+use actix_web::web::Query;
+use actix_web::{http, web, HttpResponse, Responder, ResponseError};
+use anyhow::anyhow;
+use handlebars::Handlebars;
+use http::StatusCode;
 use serde_json::json;
-use sqlx::postgres::PgPoolOptions;
 use sqlx::{Pool, Postgres, Row};
-use std::fs;
+use std::fmt::{Debug, Display, Formatter};
+use warp::http::status;
 
-pub async fn get_count_posts() -> HttpResponse {
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
-
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
-    let pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
-        .await
-        .expect("Unable to connect to Postgres");
-
-    let all_posts: Vec<i32> = Vec::new();
-
-    let rows = sqlx::query("SELECT title,description,name FROM posts")
-        .fetch_all(&pool)
-        .await
-        .unwrap();
-
-    for row in rows {
-        let _title: String = row.get("title");
-        let _description: String = row.get("description");
-        let _name: String = row.get("name");
-    }
-
-    let total_count_posts: i32 = all_posts.len() as i32;
-
-    println!("Total posts: {}", total_count_posts);
-
-    let mut handlebars = handlebars::Handlebars::new();
-    let index_template = fs::read_to_string("templates/pagination.hbs").unwrap();
-    handlebars
-        .register_template_string("pagination", &index_template)
-        .expect("TODO: panic message");
-
-    println!(" {:?}", total_count_posts);
-    let html = handlebars
-        .render("pagination", &json!({ "t": &total_count_posts }))
-        .unwrap();
-
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(html)
+#[derive(Debug)]
+struct NewErrors {
+    status_codes: i32,
 }
 
-pub async fn pagination_show(path: web::Path<i32>) -> HttpResponse {
-    println!("{:?}",path);
-    let total_posts_length: u32 = pagination_query().await as u32;
-
-    let posts_per_page = total_posts_length / 3;
-    let posts_per_page = posts_per_page as i64;
-
-    let mut page_count = Vec::new();
-    let page = path.into_inner();
-    let params = PaginateParams{page:Some(page), per_page:Some(3)};
-
-
-
-    for i in 0..posts_per_page {
-        page_count.push(i + 1_i64);
+impl Display for NewErrors {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "NewErrors: StatusCode {}", self.status_codes)
     }
-
-    println!("{:?}", page_count);
-
-
-
-    let mut handlebars = handlebars::Handlebars::new();
-    let index_template = fs::read_to_string("templates/pagination.hbs").unwrap();
-    handlebars
-        .register_template_string("pagination", &index_template)
-        .expect("TODO: panic message");
-
-    let paginator = pagination_logic(params.into()).await.expect("message");
-
-    let _current_page = &params.page;
-    let exact_posts_only = select_specific_pages_post(_current_page)
-        .await
-        .expect("message");
-
-    let all_category = get_all_categories().await.expect("categories");
-
-    let mut pages_count = Vec::new();
-
-    for i in 0..posts_per_page {
-        pages_count.push(i + 1_i64);
-    }
-
-    println!("{:?}", pages_count);
-
-    let html = handlebars.render("pagination", &json!({"a":&paginator,"tt":&total_posts_length,"page_count":pages_count,"page":exact_posts_only,"o":all_category}))
-        .unwrap() ;
-
-    HttpResponse::Ok()
-        .content_type("text/html; charset=utf-8")
-        .body(html)
 }
 
-pub async fn pagination_query() -> i64 {
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
-
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
-    let pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
-        .await
-        .expect("Unable to connect to Postgres");
-
-    let rows = sqlx::query("SELECT COUNT(*) FROM posts ")
-        .fetch_all(&pool)
-        .await
-        .unwrap();
-
-    let mut count: i64 = 0;
-
-    for row in rows {
-        let title: i64 = row.try_get("count").unwrap();
-        count += title;
-        println!("{:?}", title);
+impl ResponseError for NewErrors {
+    fn status_code(&self) -> StatusCode {
+        status::StatusCode::BAD_GATEWAY
     }
+}
+pub async fn pagination_display(
+    config: web::Data<ConfigurationConstants>,
+    handlebars: web::Data<Handlebars<'_>>,
+    user: Option<Identity>,
+    mut params: Option<Query<PaginationParams>>,
+) -> Result<HttpResponse, actix_web::Error> {
+    if user.is_none() {
+        return Ok(HttpResponse::SeeOther()
+            .insert_header((http::header::LOCATION, "/"))
+            .body(""));
+    }
+    let db = &config.database_connection;
+    let total_posts_length = pagination_logic_new(db).await?;
 
-    count
+    let posts_per_page_constant = set_posts_per_page().await as i64;
+    let mut posts_per_page = total_posts_length / posts_per_page_constant;
+    let check_remainder = total_posts_length % posts_per_page_constant;
+
+    if check_remainder != 0 {
+        posts_per_page += 1;
+    }
+    let posts_per_page = posts_per_page as usize;
+    let pages_count: Vec<_> = (1..=posts_per_page).collect();
+    let pari = params.get_or_insert(Query(PaginationParams::default()));
+    let current_pag = pari.0;
+    let current_page = current_pag.page;
+    let paginated = pagination_logic(params, db)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let exact_posts = post_select_specific_pages(current_page, db)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let all_category = get_all_categories_database(db)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let htmls = handlebars.render("admin", &json!({"a":&paginated,"tt":&total_posts_length,"pages_count":pages_count,"cat":exact_posts,"o":all_category}))
+        .map_err( actix_web::error::ErrorInternalServerError)?;
+
+    Ok(HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(htmls))
 }
 
-pub async fn select_specific_pages_post(
-    start_page: &Option<i32>,
-) -> Result<Vec<Posts>, sqlx::Error> {
-    let start_page = start_page.unwrap();
-
-    let mut new_start_page = start_page;
-    if start_page > 1 {
-        new_start_page += 2
-    }
-
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
-
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
-    let pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
+pub async fn pagination_logic_new(db: &Pool<Postgres>) -> Result<i64, actix_web::error::Error> {
+    let rows = sqlx::query("SELECT COUNT(*) FROM posts")
+        .fetch_all(db)
         .await
-        .expect("Unable to connect to Postgres");
+        .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    let selected_posts = sqlx::query_as::<_, Posts>("select * from posts limit  3 offset $2")
-        .bind(new_start_page + 3)
-        .bind(new_start_page)
-        .fetch_all(&pool)
-        .await
-        .unwrap();
+    let final_count: Vec<Result<i64, actix_web::Error>> = rows
+        .into_iter()
+        .map(|row| {
+            let final_count: i64 = row
+                .try_get("count")
+                .map_err(actix_web::error::ErrorInternalServerError)?;
+            Ok::<i64, actix_web::Error>(final_count)
+        })
+        .collect();
 
-    Ok(selected_posts)
-}
+    let a = final_count
+        .get(0)
+        .ok_or_else(|| actix_web::error::ErrorInternalServerError("error-1"))?;
 
-pub async fn category_pagination_logic(category_input: &String) -> i64 {
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
+    let b = a
+        .as_ref()
+        .map_err(|_er| actix_web::error::ErrorInternalServerError("error-2"))?;
 
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
-    let pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
-        .await
-        .expect("Unable to connect to Postgres");
-
-    let category_input = category_input.to_string();
-    let category_id = category_input.parse::<i32>().unwrap();
-
-    let rows = sqlx::query("SELECT COUNT(*) FROM posts where category_id=$1")
-        .bind(category_id)
-        .fetch_all(&pool)
-        .await
-        .unwrap();
-
-    let mut count: i64 = 0;
-    for row in rows {
-        let title: i64 = row.try_get("count").unwrap();
-        count += title;
-    }
-    count
+    Ok(*b)
 }

@@ -1,118 +1,74 @@
-use crate::model::database::Categories;
-use crate::model::database::Posts;
-use sqlx::postgres::PgPoolOptions;
-use sqlx::Error;
+use crate::model::database::{Categories, Posts, PostsCategories};
+use sqlx::{Pool, Postgres};
 
-pub async fn get_all_categories_database() -> Result<Vec<Categories>, Error> {
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
-
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
-    let pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
-        .await
-        .expect("Unable to connect to Postgres");
-
-    let all_categories = sqlx::query_as::<_, Categories>("select name, category_id from categories")
-        .fetch_all(&pool)
-        .await
-        .expect("Unable to");
+pub async fn get_all_categories_database(
+    db: &Pool<Postgres>,
+) -> Result<Vec<Categories>, anyhow::Error> {
+    let all_categories = sqlx::query_as::<_, Categories>("select name,id from categories")
+        .fetch_all(db)
+        .await?;
 
     Ok(all_categories)
 }
 
-pub async fn category_database(category: i32) -> Result<Vec<Posts>, Error> {
-    println!("{}", category);
-
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
-
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
-    let pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
-        .await
-        .expect("Unable to connect to Postgres");
-
-    let category_posts =
-        sqlx::query_as::<_, Posts>("select name from categories where category_id=$1")
-            .bind(category)
-            .fetch_all(&pool)
-            .await
-            .expect("Unable to get");
-
-    println!("{:?}", category_posts);
-
-    println!("🍓{:?}\t", category_posts);
-
-    Ok(category_posts)
-}
-
-pub async fn category_controller_database_function(category: String) -> Result<Vec<Posts>, Error> {
-    println!("{}", category);
-
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
-
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
-    let mut pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
-        .await
-        .expect("Unable to connect to Postgres");
-
-    let mut category_posts =
-        sqlx::query_as::<_, Posts>("select title, description,name from posts where name=$1")
-            .bind(category)
-            .fetch_all(&pool)
-            .await
-            .expect("Unable to get");
-
-    println!("{:?}", category_posts);
-
-    Ok(category_posts)
-}
-
-pub async fn create_new_category_database(name: &String) -> Result<(), Error> {
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
-
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
-
-    let mut pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
-        .await
-        .expect("Unable to connect to Postgres");
-
-    sqlx::query("insert into categories(name) values ($1) ")
+pub async fn create_new_category_database(
+    db: &Pool<Postgres>,
+    name: &String,
+    id: &i32,
+) -> Result<(), anyhow::Error> {
+    sqlx::query("insert into categories(id,name) values ($1,$2) ")
+        .bind(id)
         .bind(name)
-        .execute(&pool)
-        .await
-        .expect("Unable add new category");
+        .execute(db)
+        .await?;
 
     Ok(())
 }
 
+pub async fn delete_category_database(
+    db: &Pool<Postgres>,
+    to_delete_category: &str,
+) -> Result<(), anyhow::Error> {
+    let to_delete_category: i32 = to_delete_category.parse::<i32>()?;
 
-pub async fn delete_category_database(delete_string: String) -> Result<(), Error> {
-    dotenv::dotenv().expect("Unable to load environment variables from .env file");
+    sqlx::query("delete from categories_posts where category_id=$1")
+        .bind(to_delete_category)
+        .execute(db)
+        .await?;
 
-    let db_url = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
+    sqlx::query("delete from categories where id=$1")
+        .bind(to_delete_category)
+        .execute(db)
+        .await?;
 
-    let pool = PgPoolOptions::new()
-        .max_connections(100)
-        .connect(&db_url)
-        .await
-        .expect("Unable to connect to Postgres");
-
-    //let delete_string = delete_string;
-
-    sqlx::query("delete from categories where category_id =$1")
-        .bind(delete_string.parse::<i32>().unwrap())
-        .execute(&pool)
-        .await
-        .expect("Unable to delete");
-    println!("Successfully deleted");
     Ok(())
+}
+
+pub async fn update_category_database(
+    name: &String,
+    category_id: &i32,
+    db: &Pool<Postgres>,
+) -> Result<(), anyhow::Error> {
+    sqlx::query("update categories set name=$1 where id=$2")
+        .bind(name)
+        .bind(category_id)
+        .execute(db)
+        .await?;
+    Ok(())
+}
+
+pub async fn category_controller_for_pagination(
+    category_id: String,
+    db: &Pool<Postgres>,
+) -> Result<Vec<PostsCategories>, anyhow::Error> {
+    println!("😀");
+    let category_id = category_id.parse::<i32>()?;
+    let category_posts = sqlx::query_as::<_, PostsCategories>(
+        "select posts.title,posts.id,posts.description,categories.name from posts,categories_posts,categories where categories_posts.post_id=posts.id and categories.id=categories_posts.category_id and categories_posts.category_id=$1"
+    )
+     .bind(category_id)
+    .fetch_all(db)
+    .await?;
+
+    Ok(category_posts)
 }
