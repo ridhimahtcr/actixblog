@@ -17,20 +17,6 @@ pub async fn delete_post_database(
     Ok(())
 }
 
-pub async fn update_post_database(
-    title: &String,
-    description: &String,
-    id: &&i32,
-    db: &Pool<Postgres>,
-) -> Result<(), anyhow::Error> {
-    sqlx::query("update posts set title=$1 ,description=$2 where id=$3")
-        .bind(title)
-        .bind(description)
-        .bind(id)
-        .execute(db)
-        .await?;
-    Ok(())
-}
 
 pub async fn create_post_database(
     id: usize,
@@ -54,5 +40,21 @@ pub async fn create_post_database(
         .execute(db)
         .await?;
 
+    Ok(())
+}
+
+
+pub async fn update_post_database(
+    title: &String,
+    description: &String,
+    id: &&i32,
+    db: &Pool<Postgres>,
+) -> Result<(), anyhow::Error> {
+    sqlx::query("update posts set title=$1 ,description=$2 where id=$3")
+        .bind(title)
+        .bind(description)
+        .bind(id)
+        .execute(db)
+        .await?;
     Ok(())
 }
