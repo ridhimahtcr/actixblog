@@ -2,7 +2,7 @@ mod controller;
 mod model;
 use crate::controller::admin_function::{admin_posts_display, display_catgory_admin_page};
 use crate::controller::authentication::login::{
-    check_user, get_data_after_login, login_page, logout,
+    check_user, get_login_data, login_page, logout,
 };
 use crate::controller::authentication::register::{
     get_data_from_register_page, get_registration_page,
@@ -11,7 +11,7 @@ use crate::controller::category_controller::{
     delete_category, get_all_categories_controller, get_category_with_pagination, get_new_category,
     receive_new_category, receive_updated_category, to_update_category,
 };
-use crate::controller::common_controller::{common_page_controller, redirect_user};
+use crate::controller::common_controller::{public_page_controller, redirect_user};
 use crate::controller::constants::ConfigurationConstants;
 use crate::controller::pagination_controller::pagination_display;
 use crate::controller::posts_controller::{
@@ -74,7 +74,7 @@ async fn main() -> Result<(), anyhow::Error> {
             .service(web::resource("/").to(redirect_user))
             .service(web::resource("/admin/posts/new").to(get_new_post))
             .service(web::resource("/admin/posts").route(web::post().to(receive_new_posts)))
-            //change ui
+
             .service(
                 web::resource("/admin/posts/{post_id}").route(web::get().to(admin_posts_display)), // .route(web::delete().to(delete_post))
             )
@@ -83,11 +83,11 @@ async fn main() -> Result<(), anyhow::Error> {
                     .route(web::get().to(page_to_update_post))
                     .route(web::post().to(receive_updated_post)),
             )
-            .service(web::resource("/posts").route(web::get().to(common_page_controller)))
+            .service(web::resource("/posts").route(web::get().to(public_page_controller)))
             .service(web::resource("/posts/{post_id}").route(web::get().to(get_single_post)))
             .service(
                 web::resource(" /posts/page/{page_number}")
-                    .route(web::get().to(common_page_controller)),
+                    .route(web::get().to(public_page_controller)),
             )
             .service(
                 web::resource("/posts/category/{category_id}").to(get_category_with_pagination),
@@ -114,7 +114,7 @@ async fn main() -> Result<(), anyhow::Error> {
             .service(
                 web::resource("/admin/post/{post_id}/delete").route(web::get().to(delete_post)),
             )
-            //change ui
+
             .service(
                 web::resource("/admin/categories/{category_id}").to(display_catgory_admin_page),
             )
@@ -125,7 +125,7 @@ async fn main() -> Result<(), anyhow::Error> {
             .service(
                 web::resource("/login")
                     .route(web::get().to(login_page))
-                    .route(web::post().to(get_data_after_login)),
+                    .route(web::post().to(get_login_data)),
             )
             .service(web::resource("/logout").to(logout))
             .service(

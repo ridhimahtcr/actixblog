@@ -34,7 +34,7 @@ pub async fn login_page(
         .body(html))
 }
 
-pub async fn get_data_after_login(
+pub async fn get_login_data(
     form: web::Form<User>,
     req: HttpRequest,
     _user: Option<Identity>,

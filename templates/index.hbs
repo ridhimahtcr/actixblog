@@ -39,20 +39,20 @@
 </br>
 <label for="category">Choose a category:</label>
 
-<select name="cars" id="cars">
+<select name="books" id="books">
     {{#each o}}
     <option value="{{this}}"> <a href="/categories/{{this}}">{{this}}</a> </option>
         {{/each}}
 </select>
 
-<ul class="listing category">
+<ul class="list category">
     {{#each o}}
         <a href="/categories/{{this}}"><li>{{this}}</li></a>
     {{/each}}
 </ul>
 
 
-<ul class="people_list">
+<ul class="new_list">
     {{#each p}}
         <li><a href="{{this}}"> {{this}}</li></a>
     {{/each}}

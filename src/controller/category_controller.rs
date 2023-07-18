@@ -9,7 +9,7 @@ use crate::model::category_database::{
 };
 use crate::model::database::Categories;
 use crate::model::pagination_database::{category_pagination, PaginationParams};
-use crate::model::pagination_logic::post_select_specific_pages;
+use crate::model::pagination_logic::specific_post_pages;
 use actix_identity::Identity;
 use actix_web::http::header::ContentType;
 use actix_web::web::Query;
@@ -43,7 +43,7 @@ pub async fn get_all_categories_controller(
     let pages_count: Vec<_> = (1..=posts_per_page).collect();
     let parameter = params.get_or_insert(Query(PaginationParams::default()));
     let current_page = parameter.clone().page;
-    let exact_posts_only = post_select_specific_pages(current_page, &db.clone())
+    let exact_posts_only = specific_post_pages(current_page, &db.clone())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 

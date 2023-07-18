@@ -6,7 +6,7 @@ use crate::model::category_database::{
     category_controller_for_pagination, get_all_categories_database,
 };
 use crate::model::pagination_database::{category_pagination, pagination_logic, PaginationParams};
-use crate::model::pagination_logic::post_select_specific_pages;
+use crate::model::pagination_logic::specific_post_pages;
 use crate::model::single_posts_database::{single_post_search, single_post_structure};
 use actix_identity::Identity;
 use actix_web::http::header::ContentType;

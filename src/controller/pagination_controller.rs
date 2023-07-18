@@ -4,7 +4,7 @@ use crate::controller::constants::ConfigurationConstants;
 use crate::model::authentication::login_database::LoginTest;
 use crate::model::category_database::get_all_categories_database;
 use crate::model::pagination_database::{pagination_logic, PaginationParams};
-use crate::model::pagination_logic::post_select_specific_pages;
+use crate::model::pagination_logic::specific_post_pages;
 use actix_identity::Identity;
 use actix_web::http::header::ContentType;
 use actix_web::web::Query;
@@ -63,7 +63,7 @@ pub async fn pagination_display(
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    let exact_posts = post_select_specific_pages(current_page, db)
+    let exact_posts = specific_post_pages(current_page, db)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 

@@ -2,7 +2,7 @@ use crate::controller::constants::ConfigurationConstants;
 use crate::controller::pagination_controller::pagination_logic_new;
 use crate::model::category_database::get_all_categories_database;
 use crate::model::pagination_database::PaginationParams;
-use crate::model::pagination_logic::post_select_specific_pages;
+use crate::model::pagination_logic::specific_post_pages;
 use actix_web::http::header::ContentType;
 use actix_web::web::Query;
 use actix_web::{web, HttpResponse, Responder};
@@ -10,7 +10,7 @@ use handlebars::Handlebars;
 use serde_json::json;
 use std::option::Option;
 
-pub async fn common_page_controller(
+pub async fn public_page_controller(
     mut params: Option<Query<PaginationParams>>,
     config: web::Data<ConfigurationConstants>,
     handlebars: web::Data<Handlebars<'_>>,
@@ -28,7 +28,7 @@ pub async fn common_page_controller(
     let pages_count: Vec<_> = (1..=posts_per_page).collect();
     let parameter = params.get_or_insert(Query(PaginationParams::default()));
     let current_page = parameter.clone().page;
-    let exact_posts = post_select_specific_pages(current_page, &db.clone())
+    let exact_posts = specific_post_pages(current_page, &db.clone())
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 

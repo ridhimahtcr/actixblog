@@ -2,7 +2,7 @@ use crate::controller::common_controller::set_posts_per_page;
 use crate::model::database::Posts;
 use sqlx::{Pool, Postgres};
 
-pub async fn post_select_specific_pages(
+pub async fn specific_post_pages(
     start_page: i32,
     db: &Pool<Postgres>,
 ) -> Result<Vec<Posts>, anyhow::Error> {
