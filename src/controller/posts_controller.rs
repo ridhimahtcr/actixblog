@@ -78,16 +78,16 @@ pub async fn delete_post(
         .body(html))
 }
 
-pub async fn page_to_update_post(
+pub async fn update_post(
     to_be_updated_post: web::Path<String>,
     handlebars: web::Data<Handlebars<'_>>,
 ) -> Result<HttpResponse, actix_web::Error> {
-    let to_be_updated_post = to_be_updated_post.clone();
-    update_post_new(&to_be_updated_post).await;
+    let updated_post = to_be_updated_post.clone();
+    update_post_new(&updated_post).await;
     let html = handlebars
         .render(
             "update_post",
-            &json!({ "to_be_updated_post": &to_be_updated_post }),
+            &json!({ "to_be_updated_post": &updated_post }),
         )
         .map_err(actix_web::error::ErrorInternalServerError)?;
     Ok(HttpResponse::Ok()
