@@ -38,11 +38,11 @@ background-image : url("https://img.freepik.com/premium-vector/network-connectio
   font-family: "Roboto", sans-serif;
   text-transform: uppercase;
   outline: 0;
-  background: #4CAF50;
+  background:#af634c;
   width: 100%;
   border: 0;
   padding: 15px;
-  color: #FFFFFF;
+  color: white;
   font-size: 14px;
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;

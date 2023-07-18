@@ -1,4 +1,4 @@
-use crate::controller::common_controller::set_posts_per_page;
+use crate::controller::public_controller::set_posts_per_page;
 use crate::model::database::Posts;
 use sqlx::{Pool, Postgres};
 

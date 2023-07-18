@@ -171,15 +171,15 @@ function get_value(value) {
         <table class="table table">
             <thead>
             <tr>
-                <th scope="col">Title</th>
-                <th scope="col" >Description</th>
+                <th scope="col" style="font-size:20px;">TITLE</th>
+                <th scope="col" style="font-size:20px;">DESCRIPTION</th>
 
             </tr>
             </thead>
             <tbody>
 
             {{#each  cat}}
-                <td> <a href="/posts/{{this.id}}"> {{this.title}}</td>
+                <td>  {{this.title}}</td>
                 <td> <a href="/posts/{{this.id}}"> {{this.description}}</td>
                 </a>
                 </tr>

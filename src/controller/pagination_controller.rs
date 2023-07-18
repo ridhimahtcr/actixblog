@@ -1,21 +1,22 @@
 use crate::controller::authentication::login::check_user;
-use crate::controller::common_controller::set_posts_per_page;
+use crate::controller::public_controller::set_posts_per_page;
 use crate::controller::constants::ConfigurationConstants;
 use crate::model::authentication::login_database::LoginTest;
 use crate::model::category_database::get_all_categories_database;
 use crate::model::pagination_database::{pagination_logic, PaginationParams};
 use crate::model::pagination_logic::specific_post_pages;
 use actix_identity::Identity;
-use actix_web::http::header::ContentType;
-use actix_web::web::Query;
-use actix_web::{http, web, HttpResponse, Responder, ResponseError};
-use anyhow::anyhow;
-use handlebars::Handlebars;
 use http::StatusCode;
 use serde_json::json;
 use sqlx::{Pool, Postgres, Row};
+use actix_web::{http, web, HttpResponse, Responder, ResponseError};
+use anyhow::anyhow;
+use handlebars::Handlebars;
 use std::fmt::{Debug, Display, Formatter};
 use warp::http::status;
+use actix_web::http::header::ContentType;
+use actix_web::web::Query;
+
 
 #[derive(Debug)]
 struct NewErrors {
@@ -33,6 +34,36 @@ impl ResponseError for NewErrors {
         status::StatusCode::BAD_GATEWAY
     }
 }
+
+
+pub async fn pagination_logic_new(db: &Pool<Postgres>) -> Result<i64, actix_web::error::Error> {
+    let rows = sqlx::query("SELECT COUNT(*) FROM posts")
+        .fetch_all(db)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let final_count: Vec<Result<i64, actix_web::Error>> = rows
+        .into_iter()
+        .map(|row| {
+            let final_count: i64 = row
+                .try_get("count")
+                .map_err(actix_web::error::ErrorInternalServerError)?;
+            Ok::<i64, actix_web::Error>(final_count)
+        })
+        .collect();
+
+    let a = final_count
+        .get(0)
+        .ok_or_else(|| actix_web::error::ErrorInternalServerError("error-1"))?;
+
+    let b = a
+        .as_ref()
+        .map_err(|_er| actix_web::error::ErrorInternalServerError("error-2"))?;
+
+    Ok(*b)
+}
+
+
 pub async fn pagination_display(
     config: web::Data<ConfigurationConstants>,
     handlebars: web::Data<Handlebars<'_>>,
@@ -79,29 +110,3 @@ pub async fn pagination_display(
         .body(htmls))
 }
 
-pub async fn pagination_logic_new(db: &Pool<Postgres>) -> Result<i64, actix_web::error::Error> {
-    let rows = sqlx::query("SELECT COUNT(*) FROM posts")
-        .fetch_all(db)
-        .await
-        .map_err(actix_web::error::ErrorInternalServerError)?;
-
-    let final_count: Vec<Result<i64, actix_web::Error>> = rows
-        .into_iter()
-        .map(|row| {
-            let final_count: i64 = row
-                .try_get("count")
-                .map_err(actix_web::error::ErrorInternalServerError)?;
-            Ok::<i64, actix_web::Error>(final_count)
-        })
-        .collect();
-
-    let a = final_count
-        .get(0)
-        .ok_or_else(|| actix_web::error::ErrorInternalServerError("error-1"))?;
-
-    let b = a
-        .as_ref()
-        .map_err(|_er| actix_web::error::ErrorInternalServerError("error-2"))?;
-
-    Ok(*b)
-}

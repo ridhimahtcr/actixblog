@@ -11,7 +11,7 @@ use crate::controller::category_controller::{
     delete_category, get_all_categories_controller, get_category_with_pagination, get_new_category,
     receive_new_category, receive_updated_category, to_update_category,
 };
-use crate::controller::common_controller::{public_page_controller, redirect_user};
+use crate::controller::public_controller::{public_page_controller, redirect_user};
 use crate::controller::constants::ConfigurationConstants;
 use crate::controller::pagination_controller::pagination_display;
 use crate::controller::posts_controller::{

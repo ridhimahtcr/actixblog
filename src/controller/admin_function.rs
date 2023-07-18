@@ -10,15 +10,46 @@ use crate::model::pagination_logic::specific_post_pages;
 use crate::model::single_posts_database::{single_post_search, single_post_structure};
 use actix_identity::Identity;
 use actix_web::http::header::ContentType;
+use handlebars::Handlebars;
+use warp::http::status;
 use actix_web::web::Query;
 use actix_web::{http, web, HttpResponse, Responder, ResponseError};
-use anyhow::anyhow;
-use handlebars::Handlebars;
 use http::StatusCode;
 use serde_json::json;
 use sqlx::{Pool, Postgres, Row};
 use std::fmt::{Debug, Display, Formatter};
-use warp::http::status;
+use anyhow::anyhow;
+
+
+
+
+pub async fn admin_posts_display(
+    path: web::Path<String>,
+    config: web::Data<ConfigurationConstants>,
+    handlebars: web::Data<Handlebars<'_>>,
+) -> Result<HttpResponse, actix_web::Error> {
+    let db = &config.database_connection;
+    let titles = path.parse::<i32>().unwrap_or_default();
+
+    let single_post = single_post_search(titles, db)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let single_post_structure = single_post_structure(titles, db)
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let html = handlebars
+        .render(
+            "admin_single_post",
+            &json!({"o":&single_post,"single_post":single_post_structure}),
+        )
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    Ok(HttpResponse::Ok()
+        .content_type(ContentType::html())
+        .body(html))
+}
 
 pub async fn display_catgory_admin_page(
     path: web::Path<String>,
@@ -50,34 +81,6 @@ pub async fn display_catgory_admin_page(
         .render(
             "admin_categories_page",
             &json!({"cat":&category_posts,"pages_count":&pages_count}),
-        )
-        .map_err(actix_web::error::ErrorInternalServerError)?;
-
-    Ok(HttpResponse::Ok()
-        .content_type(ContentType::html())
-        .body(html))
-}
-
-pub async fn admin_posts_display(
-    path: web::Path<String>,
-    config: web::Data<ConfigurationConstants>,
-    handlebars: web::Data<Handlebars<'_>>,
-) -> Result<HttpResponse, actix_web::Error> {
-    let db = &config.database_connection;
-    let titles = path.parse::<i32>().unwrap_or_default();
-
-    let single_post = single_post_search(titles, db)
-        .await
-        .map_err(actix_web::error::ErrorInternalServerError)?;
-
-    let single_post_structure = single_post_structure(titles, db)
-        .await
-        .map_err(actix_web::error::ErrorInternalServerError)?;
-
-    let html = handlebars
-        .render(
-            "admin_single_post",
-            &json!({"o":&single_post,"single_post":single_post_structure}),
         )
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
