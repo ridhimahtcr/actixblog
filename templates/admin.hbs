@@ -7,28 +7,33 @@
 body {
   margin: 0;
   font-family: "Lato", sans-serif;
-  background-image : "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80;"
+  background-image : "https://img.freepik.com/free-vector/blue-curve-frame-template_53876-114605.jpg?w=2000"
+}
+
+a{
+
+    color: #e4e8ec;
 }
 
 .sidebar {
-  margin: 0;
-  padding: 0;
-  width: 200px;
-  background-color: #f1f1f1;
-  position: fixed;
-  height: 100%;
-  overflow: auto;
-  background-image : url("https://img.freepik.com/free-vector/aesthetic-phone-wallpaper-background-vector-leaf-shadow-with-natural-light_53876-136590.jpg");
-      background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+height: 100%;
+width: 216px;
+position: absolute;
+left: 0;
+top: 0;
+padding-top: 40px;
+background-color: lightblue;
 }
 
 .sidebars{
-background-image : url("https://img.freepik.com/free-vector/abstract-memphis-mobile-phone-wallpaper_53876-154032.jpg");
-      background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;}
+height: 100%;
+    width: 209px;
+position: absolute;
+left: 0;
+top: 0;
+padding-top: 40px;
+background-color: lightblue;
+    width: 216px;}
 
 .sidebar a {
   display: block;
@@ -47,11 +52,13 @@ background-image : url("https://img.freepik.com/free-vector/abstract-memphis-mob
   color: white;
 }
 
+
+
 div.content {
   margin-left: 200px;
   padding: 1px 16px;
   height: 1000px;
-    background-image : url("https://img.freepik.com/free-photo/blue-smoke-background-textured-wallpaper-high-resolution_53876-128239.jpg?w=2000");
+    background-image : url("https://img.freepik.com/free-vector/blue-curve-frame-template_53876-114605.jpg?w=2000");
       background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -147,14 +154,16 @@ div.content {
 .show {display: block;}
 
        .sidebars {
-      width: 200px;
-      height: 100vh;
-      background-color: #f1f1f1;
-      padding: 20px;
-      float: left;
+     height: 100%;
+width: 150px;
+position: absolute;
+left: 0;
+top: 0;
+padding-top: 40px;
+background-color: lightblue;
     }
 
-    /* Sidebar links */
+
     .sidebars a {
       display: block;
       color: #000;
@@ -162,13 +171,13 @@ div.content {
       text-decoration: none;
     }
 
-    /* Active link */
+
     .sidebars a.active {
       background-color: #4CAF50;
       color: white;
     }
 
-    /* Dropdown menu */
+
     .sidebars .dropdown-contenting {
       display: none;
       padding-left: 20px;
@@ -178,12 +187,12 @@ div.content {
       padding: 5px 0;
     }
 
-    /* Show dropdown menu on hover */
+
     .sidebars .dropdown:hover .dropdown-contenting {
       display: block;
     }
 
-    /* Content */
+
     .content {
       margin-left: 220px; /* Adjust the value to match the sidebar width */
       padding: 20px;
@@ -226,7 +235,7 @@ window.onclick = function(event) {
   }
 }
 
-function myfunction() {
+function drop() {
   document.getElementById("myDropdowns").classList.toggle("show");
 }
 
@@ -256,18 +265,11 @@ function myFunctionForDelete(){
 </script>
 </head>
 <body>
-<div class="sidebars">
-    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+<div class="sidebars" style="width:200px;">
+
     <a class="active" href="/admin">Home</a><br>
     <a href="/admin/categories">Categories</a><br>
-    <div class="dropdown">
-        <a href="#">Select Category</a>
-        <div class="dropdown-contenting">
-            {{#each o}}
-                <a href="admin/categories/{{this.id}}?page=1"><strong>{{this.name}}</strong></a>
-            {{/each}}
-        </div>
-    </div>
     <br>
     <br>
     &nbsp;&nbsp;&nbsp;<button type="button" class="btn btn-danger" class="btn btn-default btn-sm">
@@ -276,40 +278,47 @@ function myFunctionForDelete(){
 </div>
 
 <div class="content">
-    <div class="jumbotron  text-center" style="    background-color: #f0ebce;
+    <div class=" text-center" style="
     font-family: cursive;
     font-size: 200px;
 ;">
      <h1>Blog</h1>
     </div>
     <p>
-        <button type="button" class="btn btn-success" style="margin-left: 80%;">    <a href="admin/posts/new">Create new post</a> </button>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-success" style="margin-left: 80%;
+    color: #fff;
+    background-color: #090b78;
+    border-color: #01071a;
+">    <a href="admin/posts/new">Create new post</a> </button>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
     </p>
 
 
 
+
+
+
     <div class="dropdowns" style="margin-left: 80%;">
-        <button onclick="myfunction()" class="dropbtns">Select Category</button>
-        <div id="myDropdowns" class="dropdown-contents">
+        <select onclick="myfunction()" class="dropbtns">
+            <option id="myDropDowns">Select Category</option>
             {{#each o}}
-                <a href="admin/categories/{{this.id}}?page=1"><strong>{{this.name}}</strong></a>
+                <option value="admin/categories/{{this.id}}?page=1">{{this.name}}</option>
             {{/each}}
-        </div>
+        </select>
     </div>
     <br>
     <br>
     <br>
 
 
-    <div class="row">
-        <div class="col-12">
-            <table class="table table-bordered">
+    <div class="row" >
+        <div class="col-12" >
+            <table class="table table-bordered" style=" border: 1px solid #121111;" >
                 <thead>
-                <tr>
-                    <th scope="col">POST ID</th>
-                    <th scope="col">TITLE</th>
-                    <th scope="col" >DESCRIPTION</th>
-                    <th scope="col">ACTIONS</th>
+                <tr style="border: 1px solid #0d0d0d;">
+                    <th scope="col"  style="border: 1px solid #121111;">POST ID</th>
+                    <th scope="col" style="border: 1px solid #121111;">TITLE</th>
+                    <th scope="col" style="border: 1px solid #121111;">DESCRIPTION</th>
+                    <th scope="col" style="border: 1px solid #121111;">ACTIONS</th>
 
                 </tr>
                 </thead>
@@ -317,11 +326,11 @@ function myFunctionForDelete(){
 
                 {{#each  cat}}
 
-                    <td {{this.id}}>{{this.id}}</td>
-                    <td> <a href="admin/posts/{{this.id}}"> {{this.title}}</td>
-                    <td> <a href="admin/posts/{{this.id}}"> {{this.description}}</td>
+                    <td style="border: 1px solid #121111;"> {{this.id}}</td>
+                    <td style="border: 1px solid #121111;"> <a href="admin/posts/{{this.id}}"> {{this.title}}</td>
+                    <td style="border: 1px solid #121111;"> <a href="admin/posts/{{this.id}}"> {{this.description}}</td>
 
-                    <td> <button><a  onclick="return confirm('Do you want to delete this post?')" href="admin/post/{{this.id}}/delete"> Delete</a></button>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     </a>
+                    <td style="border: 1px solid #121111;"> <button><a  onclick="return confirm('Do you want to delete this post?')" href="admin/post/{{this.id}}/delete"> Delete</a></button>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     </a>
                      <button>   <a href="admin/posts/{{this.id}}/edit"> update </a></button>
 
                     </td>

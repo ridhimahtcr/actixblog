@@ -1,122 +1,66 @@
+<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        body {
+            margin: 0;
+            font-family: "Lato", sans-serif;
+            background-image: url("https://img.freepik.com/free-photo/overhead-view-coffee-cup-keyboard-camera-paper-white-background_23-2148042112.jpg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
 
+        h1 {
+            background-color: white;
+            padding-left: 40%;
+            font-size: 100px;
+            font-family: fantasy;
+        }
 
-body {
-  margin: 0;
-  font-family: "Lato", sans-serif;
-  background-image : url("https://img.freepik.com/premium-photo/aesthetic-background-with-contemporary-modern-color-variants_666745-114.jpg");
- background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+        .container-fluid {
+            padding: 20px;
 
-h1{
-background-image : url("https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/rm452-f-014-x.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=06255fd9153aea5fb51595a1dee7fae6");
- background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding-left: 40%;
-    font-size: 100px;
-    font-family: fantasy;
-}
+        }
 
-.sidebar {
-  margin: 0;
-  padding: 0;
-  width: 200px;
-  background-color: #f1f1f1;
-  position: fixed;
-  height: 100%;
-  overflow: auto;
-  background-image : url("https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/rm452-f-014-x.jpg?w=800&dpr=1&fit=default&crop=default&q=65&vib=3&con=3&usm=15&bg=F4F4F3&ixlib=js-2.2.1&s=06255fd9153aea5fb51595a1dee7fae6");
- background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+        .blog-post {
+            background-color: #f1f1f1;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-.sidebar a {
-  display: block;
-  color: black;
-  padding: 16px;
-  text-decoration: none;
-}
+        .blog-title {
+    font-size: 38px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-family: cursive;
+    }
 
-.sidebar a.active {
-  background-color: #04AA6D;
-  color: white;
-}
+        .blog-description {
+            font-size: 16px;
+        }
 
-.sidebar a:hover:not(.active) {
-  background-color: #555;
-  color: white;
-}
+        .pagination {
+            margin-top: 20px;
+        }
 
-div.content {
-  margin-left: 200px;
-  padding: 1px 16px;
-  height: 1000px;
-  background-image : url("https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvcm00OTYtcG9zdGVyYmctMDUtbDA2Z3J1OG4uanBn.jpg?s=kYmSzSnbLMWvpZ6t7kC6jLK8M6VGwxu0kvPFPE8Li5M");
-      background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+        .pagination li {
+            display: inline-block;
+            margin-right: 5px;
+        }
 
-@media screen and (max-width: 700px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-  .sidebar a {float: left;}
-  div.content {margin-left: 0;}
-}
+        .pagination li a {
+            padding: 5px 10px;
+            background-color: #04AA6D;
+            color: white;
+            text-decoration: none;
+        }
 
-@media screen and (max-width: 400px) {
-  .sidebar a {
-    text-align: center;
-    float: none;
-  }
-}
-
-
-.dropbtn {
-  background-color: #04AA6D;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown-content a:hover {background-color: #ddd;}
-
-.dropdown:hover .dropdown-content {display: block;}
-
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
-</style>
+        .pagination li.active a {
+            background-color: #555;
+        }
+    </style>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -133,73 +77,35 @@ div.content {
     font-size: 100px;
     font-family: fantasy;">My Blog</h1>
 <div class="container-fluid">
-        <br><br>
-
-            <button  style="margin-left: 90%; color: black;">
-                <h2 ><a href="/login">Login</a></h2>
-            </button>&nbsp;
-        <br>
-        <br>
-            <button style="margin-left: 90%; color: black; ">
-                <h2> <a href="/login">Register</a></h2>
-            </button>
-    </div>
-
-
-
-<p class="listing category">
-
-<script type="text/javascript">
-function get_value(value) {
-  var x = document.getElementById("cat").value;
-  alert(x);
-
-}
-</script>
-
-<div class="dropdown" style="margin-left: 88%; color: black;">
-    <button class="dropbtn" >Select Category</button><br><br>
-    <div class="dropdown-content">
-        {{#each o}}
-            <a href="posts/category/{{this.id}}?page=1"><strong>{{this.name}}</strong></a>
+    <br><br>
+    <button  style="margin-left: 90%; color: black;">
+        <h2 ><a href="/login">Login</a></h2>
+    </button>&nbsp;
+    <br>
+    <br>
+    <button style="margin-left: 90%; color: black; ">
+        <h2> <a href="/login">Register</a></h2>
+    </button>
+    <br><br>
+    <div class="blog-posts">
+        {{#each cat}}
+            <div class="blog-post">
+                <h2 class="blog-title">{{this.title}}</h2>
+                <p class="blog-description">{{this.description}} <a href="/posts/{{this.id}}">See post</a></p>
+            </div>
         {{/each}}
     </div>
-</div>
 
-<div class="row">
-    <div class="col-12">
-        <table class="table table">
-            <thead>
-            <tr>
-                <th scope="col" style="font-size:20px;">TITLE</th>
-                <th scope="col" style="font-size:20px;">DESCRIPTION</th>
 
-            </tr>
-            </thead>
-            <tbody>
-
-            {{#each  cat}}
-                <td>  {{this.title}}</td>
-                <td> <a href="/posts/{{this.id}}"> {{this.description}}</td>
-                </a>
-                </tr>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {{#each pages_count }}
+                <li class="{{#if this.isActive}}active{{/if}}">
+                    <a class="page-link" href="?page={{this}}">{{this}}</a>
+                </li>
             {{/each}}
-
-            </tbody>
-        </table>
-
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                {{#each pages_count }}
-                    <li class="page-item"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
-                {{/each}}
-            </ul>
-        </nav>
-
-    </div>
+        </ul>
+    </nav>
 </div>
-
-
 </body>
 </html>
-

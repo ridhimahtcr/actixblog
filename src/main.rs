@@ -15,7 +15,7 @@ use crate::controller::public_controller::{public_page_controller, redirect_user
 use crate::controller::constants::ConfigurationConstants;
 use crate::controller::pagination_controller::pagination_display;
 use crate::controller::posts_controller::{
-    delete_post, get_new_post, update_post, receive_new_posts, receive_updated_post,
+    delete_post, get_new_post, page_to_update_post, receive_new_posts, receive_updated_post,
 };
 use crate::controller::single_post_controller::get_single_post;
 use actix_identity::IdentityMiddleware;
@@ -80,7 +80,7 @@ async fn main() -> Result<(), anyhow::Error> {
             )
             .service(
                 web::resource("/admin/posts/{post_id}/edit")
-                    .route(web::get().to(update_post))
+                    .route(web::get().to(page_to_update_post))
                     .route(web::post().to(receive_updated_post)),
             )
             .service(web::resource("/posts").route(web::get().to(public_page_controller)))

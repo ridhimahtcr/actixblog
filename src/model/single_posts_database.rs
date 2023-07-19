@@ -18,8 +18,6 @@ pub async fn single_post_search(
             title + " " + &description
         })
         .collect();
-
-
     Ok(single_post)
 }
 pub async fn single_post_structure(

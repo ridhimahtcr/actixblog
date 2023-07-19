@@ -17,14 +17,14 @@ pub async fn get_single_post(
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    let single_post_struct = single_post_structure(titles, db)
+    let single_post_structure = single_post_structure(titles, db)
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
     let html = handlebars
         .render(
             "single",
-            &json!({"o":&single_post,"single_post":single_post_struct}),
+            &json!({"o":&single_post,"single_post":single_post_structure}),
         )
         .map_err(actix_web::error::ErrorInternalServerError)?;
 

@@ -67,26 +67,20 @@ div.content {
 </div>
 
 <div class="content">
-    MAIN PAGE
 <p class="listing category">
     {{#each o}}
         <a href="/categories/{{this}}"><li>{{this}}</a>      <a href="/delete_category/{{this}}">Delete</a></p>
     {{/each}}
     </p>
 
-    <p>
+
         {{#each cat}}
         <a href="/posts/{{this.title}}">
             {{#each this}}  " "
                 {{ this }}
             {{/each}}"   "<a href="/delete_post/{{this.title}}">Delete </a> "    "<a href="/update_post/{{this.title}}">update </a> <br>
         {{/each}}</a>
-    <P>
-    <ul>
 
-
-
-    </ul>
 
     <div class="pagination_logic">
         {{#each pages_count }}
