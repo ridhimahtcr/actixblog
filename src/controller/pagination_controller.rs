@@ -135,10 +135,10 @@ pub async fn pagination_display(
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    let html = handlebars.render("admin", &json!({"a":&paginated,"pages_count":pages_count,"cat":exact_posts,"o":all_category}))
+    let htmla = handlebars.render("admin", &json!({"a":&paginated,"pages_count":pages_count,"cat":exact_posts,"o":all_category}))
         .map_err( actix_web::error::ErrorInternalServerError)?;
 
     Ok(HttpResponse::Ok()
         .content_type(ContentType::html())
-        .body(html))
+        .body(htmla))
 }

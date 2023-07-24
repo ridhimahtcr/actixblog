@@ -17,7 +17,7 @@ use crate::controller::pagination_controller::pagination_display;
 use crate::controller::posts_controller::{
     delete_post, get_new_post, page_to_update_post, receive_new_posts, receive_updated_post,
 };
-use crate::controller::public_controller::{public_page_controller, redirect_user};
+use crate::controller::public_controller::{public_page_controller,posts_index, redirect_user};
 use crate::controller::single_post_controller::get_single_post;
 use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;
@@ -83,7 +83,7 @@ async fn main() -> Result<(), anyhow::Error> {
                     .route(web::get().to(page_to_update_post))
                     .route(web::post().to(receive_updated_post)),
             )
-            .service(web::resource("/posts").route(web::get().to(public_page_controller)))
+            .service(web::resource("/posts").route(web::get().to(posts_index)))
             .service(web::resource("/posts/{post_id}").route(web::get().to(get_single_post)))
             .service(
                 web::resource(" /posts/page/{page}")
