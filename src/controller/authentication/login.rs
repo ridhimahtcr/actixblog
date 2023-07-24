@@ -1,4 +1,4 @@
-use crate::controller::constants::ConfigurationConstants;
+use crate::controller::secret_key::ConfigurationConstants;
 use crate::model::authentication::login_database::{login_database, LoginTest};
 use actix::{utils, Response};
 use actix_http::body::MessageBody;
@@ -53,7 +53,7 @@ pub async fn get_login_data(
     if result == test {
         Identity::login(&req.extensions(), username.to_string())
             .map_err(actix_web::error::ErrorInternalServerError)?;
-        Ok(web::Redirect::to("/admin?page=1&limit=2"))
+        Ok(web::Redirect::to("/admin"))
     } else {
         HttpResponse::Unauthorized().body("Invalid username or password");
         Ok(web::Redirect::to("/posts"))

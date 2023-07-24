@@ -1,4 +1,4 @@
-use crate::controller::constants::ConfigurationConstants;
+use crate::controller::secret_key::ConfigurationConstants;
 use crate::model::single_posts_database::{single_post_search, single_post_structure};
 use actix_web::http::header::ContentType;
 use actix_web::{web, HttpResponse};

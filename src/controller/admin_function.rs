@@ -1,5 +1,5 @@
 use crate::controller::authentication::login::check_user;
-use crate::controller::constants::ConfigurationConstants;
+use crate::controller::secret_key::ConfigurationConstants;
 use crate::controller::pagination_controller::pagination_logic_new;
 use crate::model::authentication::login_database::LoginTest;
 use crate::model::category_database::{
@@ -10,18 +10,15 @@ use crate::model::pagination_logic::specific_post_pages;
 use crate::model::single_posts_database::{single_post_search, single_post_structure};
 use actix_identity::Identity;
 use actix_web::http::header::ContentType;
-use handlebars::Handlebars;
-use warp::http::status;
 use actix_web::web::Query;
 use actix_web::{http, web, HttpResponse, Responder, ResponseError};
+use anyhow::anyhow;
+use handlebars::Handlebars;
 use http::StatusCode;
 use serde_json::json;
 use sqlx::{Pool, Postgres, Row};
 use std::fmt::{Debug, Display, Formatter};
-use anyhow::anyhow;
-
-
-
+use warp::http::status;
 
 pub async fn admin_posts_display(
     path: web::Path<String>,

@@ -1,4 +1,4 @@
-use crate::controller::constants::ConfigurationConstants;
+use crate::controller::secret_key::ConfigurationConstants;
 use crate::model::category_database::get_all_categories_database;
 use crate::model::database::{CreatePost, Posts};
 use crate::model::posts_database::{

@@ -1,9 +1,10 @@
+#![allow(unused)]
+
 mod controller;
 mod model;
+
 use crate::controller::admin_function::{admin_posts_display, display_catgory_admin_page};
-use crate::controller::authentication::login::{
-    check_user, get_login_data, login_page, logout,
-};
+use crate::controller::authentication::login::{check_user, get_login_data, login_page, logout};
 use crate::controller::authentication::register::{
     get_data_from_register_page, get_registration_page,
 };
@@ -11,12 +12,12 @@ use crate::controller::category_controller::{
     delete_category, get_all_categories_controller, get_category_with_pagination, get_new_category,
     receive_new_category, receive_updated_category, to_update_category,
 };
-use crate::controller::public_controller::{public_page_controller, redirect_user};
-use crate::controller::constants::ConfigurationConstants;
+use crate::controller::secret_key::ConfigurationConstants;
 use crate::controller::pagination_controller::pagination_display;
 use crate::controller::posts_controller::{
     delete_post, get_new_post, page_to_update_post, receive_new_posts, receive_updated_post,
 };
+use crate::controller::public_controller::{public_page_controller, redirect_user};
 use crate::controller::single_post_controller::get_single_post;
 use actix_identity::IdentityMiddleware;
 use actix_session::config::PersistentSession;
@@ -74,9 +75,8 @@ async fn main() -> Result<(), anyhow::Error> {
             .service(web::resource("/").to(redirect_user))
             .service(web::resource("/admin/posts/new").to(get_new_post))
             .service(web::resource("/admin/posts").route(web::post().to(receive_new_posts)))
-
             .service(
-                web::resource("/admin/posts/{post_id}").route(web::get().to(admin_posts_display)), // .route(web::delete().to(delete_post))
+                web::resource("/admin/posts/{post_id}").route(web::get().to(admin_posts_display)),
             )
             .service(
                 web::resource("/admin/posts/{post_id}/edit")
@@ -86,22 +86,23 @@ async fn main() -> Result<(), anyhow::Error> {
             .service(web::resource("/posts").route(web::get().to(public_page_controller)))
             .service(web::resource("/posts/{post_id}").route(web::get().to(get_single_post)))
             .service(
-                web::resource(" /posts/page/{page_number}")
+                web::resource(" /posts/page/{page}")
                     .route(web::get().to(public_page_controller)),
             )
             .service(
                 web::resource("/posts/category/{category_id}").to(get_category_with_pagination),
             )
-
-
             .service(web::resource("/admin").to(pagination_display))
+
+
+            .service(web::resource("/admin/posts/page/{page}").to(pagination_display))
             .service(
                 web::resource("/admin/categories/new")
                     .route(web::get().to(get_new_category))
                     .route(web::post().to(receive_new_category)),
             )
             .service(
-                web::resource("/admin/category/{title}/edit")
+                web::resource("/categories/{category_id}/edit")
                     .route(web::get().to(to_update_category))
                     .route(web::post().to(receive_updated_category)),
             )
@@ -109,12 +110,14 @@ async fn main() -> Result<(), anyhow::Error> {
                 web::resource("/admin/categories")
                     .route(web::get().to(get_all_categories_controller)),
             )
-
+            .service(
+                web::resource("/admin/categories/page/{page}")
+                    .route(web::get().to(get_all_categories_controller)),
+            )
             .service(web::resource("/check").to(check_user))
             .service(
                 web::resource("/admin/post/{post_id}/delete").route(web::get().to(delete_post)),
             )
-
             .service(
                 web::resource("/admin/categories/{category_id}").to(display_catgory_admin_page),
             )
@@ -133,7 +136,6 @@ async fn main() -> Result<(), anyhow::Error> {
                     .route(web::get().to(get_registration_page))
                     .route(web::post().to(get_data_from_register_page)),
             )
-
     })
     .bind("127.0.0.1:8080")?
     .run()

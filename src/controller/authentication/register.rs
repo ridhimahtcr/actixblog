@@ -1,5 +1,5 @@
 use crate::controller::authentication::login::User;
-use crate::controller::constants::ConfigurationConstants;
+use crate::controller::secret_key::ConfigurationConstants;
 use crate::model::authentication::register_database::new_user_registration_database;
 use actix_web::http::header::ContentType;
 use actix_web::{web, HttpResponse};

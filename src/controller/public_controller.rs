@@ -1,4 +1,4 @@
-use crate::controller::constants::ConfigurationConstants;
+use crate::controller::secret_key::ConfigurationConstants;
 use crate::controller::pagination_controller::pagination_logic_new;
 use crate::model::category_database::get_all_categories_database;
 use crate::model::pagination_database::PaginationParams;
@@ -36,12 +36,12 @@ pub async fn public_page_controller(
         .await
         .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    let htmls = handlebars.render("public", &json!({"tt":&total_posts_length,"pages_count":pages_count,"cat":exact_posts,"o":all_category}))
+    let htmla = handlebars.render("public", &json!({"pages_count":pages_count,"cat":exact_posts,"o":all_category}))
         .map_err( actix_web::error::ErrorInternalServerError)?;
 
     Ok(HttpResponse::Ok()
         .content_type(ContentType::html())
-        .body(htmls))
+        .body(htmla))
 }
 
 pub async fn redirect_user() -> impl Responder {
@@ -49,5 +49,9 @@ pub async fn redirect_user() -> impl Responder {
 }
 
 pub async fn set_posts_per_page() -> i32 {
+    3
+}
+
+pub async fn set_categories_per_page() -> i32 {
     3
 }

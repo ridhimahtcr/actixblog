@@ -142,10 +142,10 @@ function myFunctionForDelete(){
                 </tr>
                 </thead>
                 <tbody>
-{{#each all}}
+{{#each o}}
     <td> <a href="categories/{{this.id}}?page=1">{{this.name}}</td>
     <td> <button><a  onclick="return confirm('Do you want to delete?')" href="/admin/delete_category/{{this.id}}/delete"> Delete</a></button>&nbsp;
-   <button> <a href="http://localhost:8080/admin/category/{{this.id}}/edit">Update </a> &nbsp;</button>  </td>
+   <button> <a href="http://localhost:8080/categories/{{this.id}}/edit">Update </a> &nbsp;</button>  </td>
     </tr>
 {{/each}}
                 </tbody>

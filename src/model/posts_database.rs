@@ -17,7 +17,6 @@ pub async fn delete_post_database(
     Ok(())
 }
 
-
 pub async fn create_post_database(
     id: usize,
     title: String,
@@ -42,7 +41,6 @@ pub async fn create_post_database(
 
     Ok(())
 }
-
 
 pub async fn update_post_database(
     title: &String,

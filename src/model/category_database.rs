@@ -61,7 +61,6 @@ pub async fn category_controller_for_pagination(
     category_id: String,
     db: &Pool<Postgres>,
 ) -> Result<Vec<PostsCategories>, anyhow::Error> {
-    println!("😀");
     let category_id = category_id.parse::<i32>()?;
     let category_posts = sqlx::query_as::<_, PostsCategories>(
         "select posts.title,posts.id,posts.description,categories.name from posts,categories_posts,categories where categories_posts.post_id=posts.id and categories.id=categories_posts.category_id and categories_posts.category_id=$1"

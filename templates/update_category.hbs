@@ -7,21 +7,28 @@
 body {
   margin: 0;
   font-family: "Lato", sans-serif;
+  background-image : "https://img.freepik.com/free-vector/blue-curve-frame-template_53876-114605.jpg?w=2000"
 }
 
 .sidebar {
-  margin: 0;
-  padding: 0;
-  width: 200px;
-  background-color: #f1f1f1;
-  position: fixed;
-  height: 100%;
-  overflow: auto;
-   background-image : url("https://img.freepik.com/free-vector/abstract-memphis-mobile-phone-wallpaper_53876-154032.jpg");
-      background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+height: 100%;
+width: 201px;
+position: absolute;
+left: 0;
+top: 0;
+padding-top: 40px;
+background-color: lightblue;
 }
+
+.sidebars{
+height: 100%;
+    width: 201px;
+position: absolute;
+left: 0;
+top: 0;
+padding-top: 40px;
+background-color: lightblue;
+    width: 216px;}
 
 .sidebar a {
   display: block;
@@ -40,25 +47,20 @@ body {
   color: white;
 }
 
+
+
+
 div.content {
   margin-left: 200px;
   padding: 1px 16px;
   height: 1000px;
-    background-image : url("https://img.freepik.com/free-photo/blue-smoke-background-textured-wallpaper-high-resolution_53876-128239.jpg?w=2000");
+    background-image : url("https://img.freepik.com/free-vector/blue-curve-frame-template_53876-114605.jpg?w=2000");
       background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-}
 
-@media screen and (max-width: 700px) {
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-  .sidebar a {float: left;}
-  div.content {margin-left: 0;}
-}
+ }
+
 
 @media screen and (max-width: 400px) {
   .sidebar a {
@@ -76,7 +78,7 @@ div.content {
 <body>
 
 <div class="sidebar">
-    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
     <a class="active" href="#home">Home</a>
     <a href="/admin">Posts</a>
     <a href="/admin/categories">Categories</a>
@@ -87,8 +89,8 @@ div.content {
     <h1 style="margin-left: 30%;"> UPDATE CATEGORY</h1>
     UPDATE CATEGORY ID: {{to_be_updated_post}}
 </p>
-<form action="http://localhost:8080/admin/category/{{to_be_updated_post}}/edit" method="post">
-    <input type="text" name="id"  value=""  placeholder="Please enter Id" class="form-control"><br>
+<form action="/categories/{{to_be_updated_post}}/edit" method="post">
+    <input type="text" name="id"  value="{{to_be_updated_post}}"  placeholder="Please enter Id" class="form-control"><br>
     <input type="text" name="name"   placeholder="Please enter Name" class="form-control"><br>
     <input type="submit" value="Submit">
 </form>

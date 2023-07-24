@@ -6,21 +6,28 @@
 body {
   margin: 0;
   font-family: "Lato", sans-serif;
-    background-image: url("https://img.freepik.com/free-photo/overhead-view-coffee-cup-keyboard-camera-paper-white-background_23-2148042112.jpg");
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
+  background-image : "https://img.freepik.com/free-vector/blue-curve-frame-template_53876-114605.jpg?w=2000"
 }
 
 .sidebar {
-  margin: 0;
-  padding: 0;
-  width: 200px;
-  background-color: #f1f1f1;
-  position: fixed;
-  height: 100%;
-  overflow: auto;
+height: 100%;
+width: 201px;
+position: absolute;
+left: 0;
+top: 0;
+padding-top: 40px;
+background-color: lightblue;
 }
+
+.sidebars{
+height: 100%;
+    width: 201px;
+position: absolute;
+left: 0;
+top: 0;
+padding-top: 40px;
+background-color: lightblue;
+    width: 216px;}
 
 .sidebar a {
   display: block;
@@ -39,23 +46,19 @@ body {
   color: white;
 }
 
+
+
+
 div.content {
   margin-left: 200px;
   padding: 1px 16px;
   height: 1000px;
-  background-image: url("https://img.freepik.com/free-photo/overhead-view-coffee-cup-keyboard-camera-paper-white-background_23-2148042112.jpg");
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-}
-
-.jumbotron{
-  background-image : url("https://img.freepik.com/free-photo/composition-laptop-compass-engineering_23-2148169502.jpg");
- background-position: center;
+    background-image : url("https://img.freepik.com/free-vector/blue-curve-frame-template_53876-114605.jpg?w=2000");
+      background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-}
 
+ }
 
 @media screen and (max-width: 700px) {
   .sidebar {
@@ -106,9 +109,8 @@ div.content {
     </button>
 </div>
 
-<br><br><br><br><br><br><br><br><br><br><br><br>
 
-<div class="jumbotron text-center"  style="background-image :https://wallpapers.com/images/featured/vintage-aesthetic-nxxxf6iyjqzz266w.jpg;">
+<div class="text-center"  style="background-image :https://wallpapers.com/images/featured/vintage-aesthetic-nxxxf6iyjqzz266w.jpg;">
    <h3>
        {{#each single_post}}
            TITLE: {{this.title}}
